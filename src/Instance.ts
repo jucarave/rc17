@@ -1,28 +1,31 @@
-import Geometry from './geometries/Geometry';
-import Matrix4 from '../math/Matrix4';
-import Renderer from './Renderer';
-import Camera from './Camera';
-import Material from './materials/Material';
-import { Vector3, vec3 } from '../math/Vector3';
+import Geometry from './engine/geometries/Geometry';
+import Renderer from './engine/Renderer';
+import Camera from './engine/Camera';
+import Material from './engine/materials/Material';
+import Matrix4 from './math/Matrix4';
+import { Vector3, vec3 } from './math/Vector3';
+import Component from './components/Component';
 
-class Mesh {
+class Instance {
     private geometry            : Geometry;
     private material            : Material;
     private position            : Vector3;
     private rotation            : Vector3;
     private transform           : Matrix4;
+    private components          : Array<Component>;
     private needsUpdate         : boolean;
 
-    constructor(geometry: Geometry, material: Material, position?: Vector3) {
-        this.geometry = geometry;
-        this.material = material;
+    constructor(position?: Vector3, geometry?: Geometry, material?: Material) {
+        this.geometry = (geometry)? geometry : null;
+        this.material = (material)? material : null;
         this.position = (position)? position : vec3(0.0);
         this.rotation = vec3(0.0);
         this.transform = Matrix4.createIdentity();
+        this.components = [];
         this.needsUpdate = true;
     }
 
-    public setPosition(x: number, y: number, z: number): Mesh {
+    public setPosition(x: number, y: number, z: number): Instance {
         this.position.set(x, y, z);
 
         this.needsUpdate = true;
@@ -30,7 +33,7 @@ class Mesh {
         return this;
     }
 
-    public setRotation(x: number, y: number, z: number): Mesh {
+    public setRotation(x: number, y: number, z: number): Instance {
         this.rotation.set(x, y, z);
 
         this.needsUpdate = true;
@@ -56,7 +59,42 @@ class Mesh {
         return this.transform;
     }
 
+    public addComponent(component: Component): Instance {
+        this.components.push(component);
+
+        return this;
+    }
+
+    public getComponent<T>(componentName: string): T {
+        for (let i=0,component;component=this.components[i];i++) {
+            if (component.name == componentName) {
+                return <T>(<any>component);
+            }
+        }
+
+        return null;
+    }
+
+    public awake(): void {
+        for (let i=0,component;component=this.components[i];i++) {
+            component.start();
+        }
+    }
+
+    public update(): void {
+        for (let i=0,component;component=this.components[i];i++) {
+            component.update();
+        }
+    }
+
+    public destroy(): void {
+        for (let i=0,component;component=this.components[i];i++) {
+            component.destroy();
+        }
+    }
+
     public render(renderer: Renderer, camera: Camera): void {
+        if (!this.geometry || !this.material) { return; }
         if (!this.material.isReady) { return; }
         
         let gl = renderer.GL,
@@ -76,4 +114,4 @@ class Mesh {
     }
 }
 
-export default Mesh;
+export default Instance;

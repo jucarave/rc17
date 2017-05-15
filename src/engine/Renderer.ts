@@ -65,6 +65,14 @@ class Renderer {
     public get shader(): Shader {
         return this.shaders.BASIC;
     }
+
+    public get width(): number {
+        return this.canvas.width;
+    }
+
+    public get height(): number {
+        return this.canvas.height;
+    }
 }
 
 export default Renderer;
