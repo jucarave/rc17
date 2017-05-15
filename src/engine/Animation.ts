@@ -56,7 +56,11 @@ class Animation {
     }
 
     public clone(): Animation {
-        return new Animation(this.name, this.frames);
+        let ret = new Animation(this.name, this.frames);
+
+        ret.setSpeed(this.animationSpeed);
+
+        return ret;
     }
 
     public get frame(): Array<number> {

@@ -31,14 +31,17 @@ abstract class Data {
         for (let animation in textureJSON.animations) {
             let anim = new Animation(animation);
 
-            for (let j=0,frame;frame=textureJSON.animations[animation][j];j++) {
-                anim.addFrame(frame[0] / textureJSON.width, frame[1] / textureJSON.height, frame[2] / textureJSON.width, frame[3] / textureJSON.height);
+            anim.setSpeed(textureJSON.animations[animation].speed);
+
+            for (let j=0,frame;frame=textureJSON.animations[animation].frames[j];j++) {
+                anim.addFrame(frame[0] / textureJSON.width, 
+                              frame[1] / textureJSON.height, 
+                              frame[2] / textureJSON.width, 
+                              frame[3] / textureJSON.height);
             }
 
             animations[animation] = anim;
         }
-
-        console.log(Data.sprites);
     }
 
     private static parseTextures(textures: any, renderer: Renderer): void {
