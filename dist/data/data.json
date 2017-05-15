@@ -1,0 +1,18 @@
+{
+    "textures": [
+        {
+            "src": "img/Characters.png",
+            "name": "characters",
+            "width": 64,
+            "height": 64,
+            "animations": {
+                "hero_stand" : [
+                    [0, 0, 32, 32],
+                    [32, 0, 32, 32],
+                    [0, 32, 32, 32],
+                    [32, 32, 32, 32]
+                ]
+            }
+        }
+    ]
+}
