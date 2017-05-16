@@ -1,6 +1,7 @@
 import Geometry from './engine/geometries/Geometry';
 import Renderer from './engine/Renderer';
 import Camera from './engine/Camera';
+import { GRID_SIZE } from './engine/Constants';
 import Material from './engine/materials/Material';
 import Matrix4 from './math/Matrix4';
 import { Vector3, vec3 } from './math/Vector3';
@@ -25,8 +26,12 @@ class Instance {
         this.needsUpdate = true;
     }
 
-    public setPosition(x: number, y: number, z: number): Instance {
-        this.position.set(x, y, z);
+    public setPosition(x: number, y: number, z: number, relative: boolean = false): Instance {
+        if (relative) {
+            this.position.add(x, y, z);
+        } else {
+            this.position.set(x, y, z);
+        }
 
         this.needsUpdate = true;
 
@@ -52,7 +57,8 @@ class Instance {
         Matrix4.multiply(this.transform, Matrix4.createYRotation(this.rotation.y));
         Matrix4.multiply(this.transform, Matrix4.createZRotation(this.rotation.z));
 
-        Matrix4.translate(this.transform, this.position.x, this.position.y, this.position.z);
+        let gs = GRID_SIZE;
+        Matrix4.translate(this.transform, this.position.x * gs + gs / 2 , this.position.y * gs + gs / 2, this.position.z * gs + gs / 2);
 
         this.needsUpdate = false;
 

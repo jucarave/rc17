@@ -10,9 +10,9 @@ abstract class Component {
         this.name = name;
     }
 
-    public abstract start(): void;
-    public abstract update(): void;
-    public abstract destroy(): void;
+    public start(): void { }
+    public update(): void { }
+    public destroy(): void { }
 }
 
 export default Component;

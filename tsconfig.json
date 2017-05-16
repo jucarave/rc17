@@ -14,6 +14,7 @@
 
     "src/components/Component.ts",
     "src/components/MovementComponent.ts",
+    "src/components/PlayerComponent.ts",
 
     "src/engine/Animation.ts",
     "src/engine/Camera.ts",

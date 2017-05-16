@@ -19,6 +19,16 @@ export class Vector3 {
         return this;
     }
 
+    public add(x: number, y: number, z: number): Vector3 {
+        this._x += x;
+        this._y += y;
+        this._z += z;
+
+        this.needsUpdate = true;
+
+        return this;
+    }
+
     public multiply(num: number): Vector3 {
         this._x *= num;
         this._y *= num;
