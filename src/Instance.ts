@@ -81,6 +81,10 @@ class Instance {
         return null;
     }
 
+    public getPosition(): Vector3 {
+        return this.position;
+    }
+
     public awake(): void {
         for (let i=0,component;component=this.components[i];i++) {
             component.start();

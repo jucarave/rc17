@@ -21,6 +21,17 @@ export class Vector4 {
         return this;
     }
 
+    public add(x: number, y: number, z: number, w: number): Vector4 {
+        this._x += x;
+        this._y += y;
+        this._z += z;
+        this._w += w;
+
+        this.needsUpdate = true;
+
+        return this;
+    }
+
     public multiply(num: number): Vector4 {
         this._x *= num;
         this._y *= num;
