@@ -19,6 +19,7 @@
     "src/engine/Animation.ts",
     "src/engine/Camera.ts",
     "src/engine/Constants.ts",
+    "src/engine/Input.ts",
     "src/engine/Renderer.ts",
     "src/engine/Texture.ts",
 
