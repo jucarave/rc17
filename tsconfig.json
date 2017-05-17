@@ -24,6 +24,7 @@
     "src/engine/Texture.ts",
 
     "src/engine/geometries/Geometry.ts",
+    "src/engine/geometries/DungeonGeometry.ts",
     "src/engine/geometries/SpriteGeometry.ts",
 
     "src/engine/materials/Material.ts",

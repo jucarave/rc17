@@ -2,7 +2,6 @@ import { VERTICE_SIZE, TEXT_COORD_SIZE } from '../Constants';
 import Renderer from '../Renderer';
 
 class Geometry {
-    private renderer           : Renderer;
     private vertices           : Array<number>;
     private textCoords         : Array<number>;
     private triangles          : Array<number>;
@@ -10,6 +9,8 @@ class Geometry {
     private textCoordBuffer    : WebGLBuffer;
     private indexBuffer        : WebGLBuffer;
     private indexLength        : number;
+
+    protected renderer           : Renderer;
 
     constructor() {
         this.vertices = [];

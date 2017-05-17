@@ -1,5 +1,5 @@
 {
-    "textures": [
+    "sprites": [
         {
             "src": "img/Characters.png",
             "name": "characters",
@@ -12,6 +12,17 @@
                         [0, 0, 64, 64]
                     ]
                 }
+            }
+        }
+    ],
+    "tileset": [
+        {
+            "src": "img/Dungeon.png",
+            "name": "dungeon",
+            "width": 64,
+            "height": 64,
+            "tiles": {
+                "floor" : [0, 0, 64, 64]
             }
         }
     ]
