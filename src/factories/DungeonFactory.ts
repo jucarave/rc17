@@ -1,5 +1,4 @@
 import Geometry from '../engine/geometries/Geometry';
-import Material from '../engine/materials/Material';
 import DungeonMaterial from '../engine/materials/DungeonMaterial';
 import Renderer from '../engine/Renderer';
 import Instance from '../Instance';
@@ -31,11 +30,13 @@ abstract class DungeonFactory {
     public static createDungeon(scene: Scene, renderer: Renderer): Instance {
         let geometry: Geometry = new Geometry(),
             tileset = Data.tileset[TILESETS.DUNGEON],
-            material: Material = new DungeonMaterial(renderer, tileset.texture, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR]);
+            material: DungeonMaterial = new DungeonMaterial(renderer, tileset.texture, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR]);
         
         DungeonFactory.addFloor(geometry, 0, 0, 10, 10);
 
         geometry.build(renderer);
+
+        material.repeatTexture(10, 10);
 
         let instance: Instance = new Instance(scene, null, geometry, material);
         instance.isStatic = true;
