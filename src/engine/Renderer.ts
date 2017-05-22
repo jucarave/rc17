@@ -1,6 +1,7 @@
 import Shader from './shaders/Shader';
 import BasicShader from './shaders/BasicShader';
-import { ShaderMap } from './shaders/ShaderStructure';
+import DungeonShader from './shaders/DungeonShader';
+import { ShaderMap, ShadersNames } from './shaders/ShaderStructure';
 
 class Renderer {
     private canvas      : HTMLCanvasElement;
@@ -49,6 +50,7 @@ class Renderer {
         this.shaders = {};
 
         this.shaders.BASIC = new Shader(this.gl, BasicShader);
+        this.shaders.DUNGEON = new Shader(this.gl, DungeonShader);
 
         this.shaders.BASIC.useProgram();
     }
@@ -58,12 +60,12 @@ class Renderer {
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
     }
 
-    public get GL(): WebGLRenderingContext {
-        return this.gl;
+    public setShader(shaderName: ShadersNames): void {
+        this.shaders[shaderName].useProgram();
     }
 
-    public get shader(): Shader {
-        return this.shaders.BASIC;
+    public get GL(): WebGLRenderingContext {
+        return this.gl;
     }
 
     public get width(): number {

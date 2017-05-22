@@ -1,5 +1,6 @@
 import { VERTICE_SIZE, TEXT_COORD_SIZE } from '../Constants';
 import Renderer from '../Renderer';
+import Shader from '../shaders/Shader';
 
 class Geometry {
     private vertices           : Array<number>;
@@ -58,7 +59,7 @@ class Geometry {
 
     public render(): void {
         let gl = this.renderer.GL,
-            shader = this.renderer.shader;
+            shader = Shader.lastProgram;
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
         gl.vertexAttribPointer(shader.attributes["aVertexPosition"], VERTICE_SIZE, gl.FLOAT, false, 0, 0);

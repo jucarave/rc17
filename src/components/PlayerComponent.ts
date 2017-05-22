@@ -54,6 +54,8 @@ class PlayerComponent extends Component {
         this.mvComponent = this.instance.getComponent<MovementComponent>(MovementComponent.className);
         if (!this.mvComponent) { throw new Error("Player component requires Movement component to be attached"); }
 
+        this.mvComponent.setCamera(this.instance.getScene().getCamera());
+
         Input.onKeyboard((keyCode: number, type: number) => {
             let control = this.keyCodeToControl(keyCode);
             if (!control) { return; }

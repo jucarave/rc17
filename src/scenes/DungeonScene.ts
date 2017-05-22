@@ -2,13 +2,13 @@ import Renderer from '../engine/Renderer';
 import Instance from '../Instance';
 import Camera from '../engine/Camera';
 import CharacterFactory from '../factories/CharacterFactory';
+import DungeonFactory from '../factories/DungeonFactory';
 import { DegToRad } from '../math/Utils';
 import Scene from './Scene';
 
 class DungeonScene extends Scene {
     private instances           : Array<Instance>;
-    private camera              : Camera
-
+    
     constructor(renderer: Renderer) {
         super(renderer);
 
@@ -18,8 +18,10 @@ class DungeonScene extends Scene {
     }
 
     private createDungeonTest(): void {
-        let player = CharacterFactory.createPlayer(this.renderer);
+        let dungeon = DungeonFactory.createDungeon(this, this.renderer);
+        this.addInstance(dungeon);
 
+        let player = CharacterFactory.createPlayer(this, this.renderer);
         this.addInstance(player);
 
         this.createCamera();

@@ -35,7 +35,15 @@ export let SPRITES = {
 
 export let ANIMATIONS = {
     HERO_STAND: "hero_stand"
-}
+};
+
+export let TILESETS = {
+    DUNGEON: "dungeon"
+};
+
+export let TILESETS_UVS = {
+    DUNGEON_FLOOR: "floor"
+};
 
 abstract class Data {
     public static sprites      : SpritesMap;

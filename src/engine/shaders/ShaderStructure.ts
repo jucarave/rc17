@@ -9,8 +9,9 @@ export interface ShaderMap {
     [index: string]: Shader
 };
 
-let ShaderType = {
-    BASIC: "BASIC"
+export let ShaderType = {
+    BASIC: "BASIC",
+    DUNGEON: "DUNGEON"
 };
 
-export { ShaderType };
+export type ShadersNames = 'BASIC' | 'DUNGEON';

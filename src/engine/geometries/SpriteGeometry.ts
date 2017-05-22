@@ -18,10 +18,10 @@ class SpriteGeometry extends Geometry {
         let w = this.width / 2,
             h = this.height / 2;
 
-        this.addVertice(-w, -h, 0.0);
-        this.addVertice( w, -h, 0.0);
-        this.addVertice(-w,  h, 0.0);
-        this.addVertice( w,  h, 0.0);
+        this.addVertice(-w,  -h, 0.0);
+        this.addVertice( w,  -h, 0.0);
+        this.addVertice(-w,   h, 0.0);
+        this.addVertice( w,   h, 0.0);
 
         this.addTextCoord(0.0, 1.0);
         this.addTextCoord(1.0, 1.0);

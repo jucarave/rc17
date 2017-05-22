@@ -2,6 +2,7 @@ import Material from './Material';
 import Renderer from '../Renderer';
 import Texture from '../Texture';
 import Animation from '../Animation';
+import Shader from '../shaders/Shader';
 
 interface AnimationMap {
     [index: string]: Animation;
@@ -13,7 +14,7 @@ class SpriteMaterial extends Material {
     private currentAnim     : string;
 
     constructor(renderer: Renderer, texture: Texture) {
-        super(renderer);
+        super(renderer, 'BASIC');
 
         this.texture = texture;
         this.animations = {};
@@ -22,7 +23,7 @@ class SpriteMaterial extends Material {
 
     public render(): void {
         let gl = this.renderer.GL,
-            shader = this.renderer.shader;
+            shader = Shader.lastProgram;
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture.texture);

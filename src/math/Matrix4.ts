@@ -96,10 +96,10 @@ class Matrix4 extends Array {
             Z = -(zfar + znear) / (zfar - znear);
 
         return new Matrix4(
-            A, 0, 0, X,
-            0, B, 0, Y,
+            A, 0, 0, 0,
+            0, B, 0, 0,
             0, 0, C, Z,
-            0, 0, 0, 1
+            X, Y, Z, 1
         );
     }
 

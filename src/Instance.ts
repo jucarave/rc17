@@ -3,11 +3,14 @@ import Renderer from './engine/Renderer';
 import Camera from './engine/Camera';
 import { GRID_SIZE } from './engine/Constants';
 import Material from './engine/materials/Material';
+import Shader from './engine/shaders/Shader';
 import Matrix4 from './math/Matrix4';
 import { Vector3, vec3 } from './math/Vector3';
 import Component from './components/Component';
+import Scene from './scenes/Scene';
 
 class Instance {
+    private scene               : Scene;
     private geometry            : Geometry;
     private material            : Material;
     private position            : Vector3;
@@ -16,7 +19,10 @@ class Instance {
     private components          : Array<Component>;
     private needsUpdate         : boolean;
 
-    constructor(position?: Vector3, geometry?: Geometry, material?: Material) {
+    public isStatic             : boolean;
+
+    constructor(scene: Scene, position?: Vector3, geometry?: Geometry, material?: Material) {
+        this.scene = scene;
         this.geometry = (geometry)? geometry : null;
         this.material = (material)? material : null;
         this.position = (position)? position : vec3(0.0);
@@ -24,6 +30,7 @@ class Instance {
         this.transform = Matrix4.createIdentity();
         this.components = [];
         this.needsUpdate = true;
+        this.isStatic = false;
     }
 
     public setPosition(x: number, y: number, z: number, relative: boolean = false): Instance {
@@ -57,8 +64,20 @@ class Instance {
         Matrix4.multiply(this.transform, Matrix4.createYRotation(this.rotation.y));
         Matrix4.multiply(this.transform, Matrix4.createZRotation(this.rotation.z));
 
-        let gs = GRID_SIZE;
-        Matrix4.translate(this.transform, this.position.x * gs + gs / 2 , this.position.y * gs + gs / 2, this.position.z * gs + gs / 2);
+        let x: number, y: number, z: number;
+        if (this.isStatic) {
+            x = this.position.x;
+            y = this.position.y;
+            z = this.position.z;
+        } else {
+            let gs = GRID_SIZE;
+
+            x = this.position.x * gs + gs / 2;
+            y = this.position.y * gs + gs / 2;
+            z = this.position.z * gs + gs / 2;
+        }
+        
+        Matrix4.translate(this.transform, x, y, z);
 
         this.needsUpdate = false;
 
@@ -85,6 +104,10 @@ class Instance {
         return this.position;
     }
 
+    public getScene(): Scene {
+        return this.scene;
+    }
+
     public awake(): void {
         for (let i=0,component;component=this.components[i];i++) {
             component.start();
@@ -106,9 +129,11 @@ class Instance {
     public render(renderer: Renderer, camera: Camera): void {
         if (!this.geometry || !this.material) { return; }
         if (!this.material.isReady) { return; }
+
+        renderer.setShader(this.material.shaderName);
         
         let gl = renderer.GL,
-            shader = renderer.shader,
+            shader = Shader.lastProgram,
             
             transform = Matrix4.createIdentity();
 
