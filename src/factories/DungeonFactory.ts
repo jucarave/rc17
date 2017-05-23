@@ -7,36 +7,39 @@ import { GRID_SIZE } from '../engine/Constants';
 import Scene from '../scenes/Scene';
 
 abstract class DungeonFactory {
-    private static addFloor(geometry: Geometry, x: number, z: number, w: number, h: number): void {
+    private static addFloor(geometry: Geometry, x: number, z: number, uvs: Array<number>): void {
         x *= GRID_SIZE;
         z *= GRID_SIZE;
-        w *= GRID_SIZE;
-        h *= GRID_SIZE;
+        let w = GRID_SIZE,
+            h = GRID_SIZE,
+            ind = geometry.verticesCount;
 
         geometry.addVertice(x, 0, z + h);
         geometry.addVertice(x + w, 0, z + h);
         geometry.addVertice(x, 0, z);
         geometry.addVertice(x + w, 0, z);
 
-        geometry.addTextCoord(0, 1);
-        geometry.addTextCoord(1, 1);
-        geometry.addTextCoord(0, 0);
-        geometry.addTextCoord(1, 0);
+        geometry.addTextCoord(uvs[0], uvs[3]);
+        geometry.addTextCoord(uvs[2], uvs[3]);
+        geometry.addTextCoord(uvs[0], uvs[1]);
+        geometry.addTextCoord(uvs[2], uvs[1]);
 
-        geometry.addTriangle(0, 1, 2);
-        geometry.addTriangle(1, 3, 2);
+        geometry.addTriangle(ind + 0, ind + 1, ind + 2);
+        geometry.addTriangle(ind + 1, ind + 3, ind + 2);
     }
 
     public static createDungeon(scene: Scene, renderer: Renderer): Instance {
         let geometry: Geometry = new Geometry(),
             tileset = Data.tileset[TILESETS.DUNGEON],
-            material: DungeonMaterial = new DungeonMaterial(renderer, tileset.texture, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR]);
+            material: DungeonMaterial = new DungeonMaterial(renderer, tileset.texture);
         
-        DungeonFactory.addFloor(geometry, 0, 0, 10, 10);
+        for (let x=0;x<10;x++) {
+            for (let z=0;z<10;z++) {
+                DungeonFactory.addFloor(geometry, x, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR]);
+            }
+        }
 
         geometry.build(renderer);
-
-        material.repeatTexture(10, 10);
 
         let instance: Instance = new Instance(scene, null, geometry, material);
         instance.isStatic = true;

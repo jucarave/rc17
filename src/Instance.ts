@@ -108,6 +108,10 @@ class Instance {
         return this.scene;
     }
 
+    public getShaderName(): string {
+        return this.material.shaderName;
+    }
+
     public awake(): void {
         for (let i=0,component;component=this.components[i];i++) {
             component.start();

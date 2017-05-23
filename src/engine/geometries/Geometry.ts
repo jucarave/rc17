@@ -71,6 +71,10 @@ class Geometry {
 
         gl.drawElements(gl.TRIANGLES, this.indexLength, gl.UNSIGNED_SHORT, 0);
     }
+
+    public get verticesCount(): number {
+        return this.vertices.length / 3;
+    }
 }
 
 export default Geometry;

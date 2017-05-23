@@ -23,14 +23,11 @@ let DungeonShader: ShaderStructure = {
         precision mediump float;
 
         uniform sampler2D uTexture;
-        uniform vec4 uSpriteRect;
-        uniform vec2 uRepeatTexture;
 
         varying vec2 vTextCoords;
         
         void main(void) {
-            vec2 coords = mod(((vTextCoords * uSpriteRect.zw)) * uRepeatTexture, uSpriteRect.zw) + uSpriteRect.xy;
-            gl_FragColor = texture2D(uTexture, coords);
+            gl_FragColor = texture2D(uTexture, vTextCoords);
         }
     `
 };

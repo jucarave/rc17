@@ -6,13 +6,17 @@ import DungeonFactory from '../factories/DungeonFactory';
 import { DegToRad } from '../math/Utils';
 import Scene from './Scene';
 
+interface InstancesMap {
+    [index: string]: Array<Instance>
+}
+
 class DungeonScene extends Scene {
-    private instances           : Array<Instance>;
+    private instances           : InstancesMap;
     
     constructor(renderer: Renderer) {
         super(renderer);
 
-        this.instances = [];
+        this.instances = {};
 
         this.createDungeonTest();
     }
@@ -38,22 +42,36 @@ class DungeonScene extends Scene {
     }
 
     private initScene(): void {
-        for (let i=0,ins;ins=this.instances[i];i++) {
-            ins.awake();
+        for (let j in this.instances) {
+            let instances = this.instances[j];
+            
+            for (let i=0,ins;ins=instances[i];i++) {
+                ins.awake();
+            }
         }
     }
 
     public addInstance(instance: Instance): void {
-        this.instances.push(instance);
+        let shaderName = instance.getShaderName();
+
+        if (this.instances[shaderName]) {
+            this.instances[shaderName].push(instance);
+        } else {
+            this.instances[shaderName] = [ instance ];
+        }
     }
 
     public render(): void {
-        for (let i=0,ins;ins=this.instances[i];i++) {
-            ins.update();
-        }
+        for (let j in this.instances) {
+            let instances = this.instances[j];
 
-        for (let i=0,ins;ins=this.instances[i];i++) {
-            ins.render(this.renderer, this.camera);
+            for (let i=0,ins;ins=instances[i];i++) {
+                ins.update();
+            }
+
+            for (let i=0,ins;ins=instances[i];i++) {
+                ins.render(this.renderer, this.camera);
+            }
         }
     }
 }
