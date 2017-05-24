@@ -3,7 +3,7 @@ import Instance from '../Instance';
 import Camera from '../engine/Camera';
 import CharacterFactory from '../factories/CharacterFactory';
 import DungeonFactory from '../factories/DungeonFactory';
-import { DegToRad } from '../math/Utils';
+//import { DegToRad } from '../math/Utils';
 import Scene from './Scene';
 
 interface InstancesMap {
@@ -34,7 +34,8 @@ class DungeonScene extends Scene {
     }
 
     private createCamera(): void {
-        let camera = Camera.createPerspective(DegToRad(90), this.renderer.width/this.renderer.height, 0.1, 100.0);
+        //let camera = Camera.createPerspective(DegToRad(90), this.renderer.width/this.renderer.height, 0.1, 100.0);
+        let camera = Camera.createOrthographic(this.renderer.width/10, this.renderer.height/10, 0.1, 100.0);
         camera.setPosition(0, 15, 30);
         camera.setTarget(0, 0, 0);
 

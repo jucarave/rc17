@@ -69,6 +69,10 @@ class Camera {
     public static createPerspective(fov: number, ratio: number, znear: number, zfar: number): Camera {
         return new Camera(Matrix4.createPerspective(fov, ratio, znear, zfar));
     }
+
+    public static createOrthographic(width: number, height: number, znear: number, zfar: number): Camera {
+        return new Camera(Matrix4.createOrtho(width, height, znear, zfar));
+    }
 }
 
 export default Camera;

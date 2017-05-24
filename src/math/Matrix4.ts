@@ -98,7 +98,7 @@ class Matrix4 extends Array {
         return new Matrix4(
             A, 0, 0, 0,
             0, B, 0, 0,
-            0, 0, C, Z,
+            0, 0, C, 0,
             X, Y, Z, 1
         );
     }
