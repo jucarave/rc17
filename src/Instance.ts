@@ -61,8 +61,8 @@ class Instance {
         Matrix4.setIdentity(this.transform);
         
         Matrix4.multiply(this.transform, Matrix4.createXRotation(this.rotation.x));
-        Matrix4.multiply(this.transform, Matrix4.createYRotation(this.rotation.y));
         Matrix4.multiply(this.transform, Matrix4.createZRotation(this.rotation.z));
+        Matrix4.multiply(this.transform, Matrix4.createYRotation(this.rotation.y));
 
         let x: number, y: number, z: number;
         if (this.isStatic) {

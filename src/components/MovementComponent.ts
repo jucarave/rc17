@@ -1,6 +1,8 @@
 import Camera from '../engine/Camera';
 import { GRID_SIZE } from '../engine/Constants';
 import { Vector4, vec4 } from '../math/Vector4';
+import { Vector3, vec3 } from '../math/Vector3';
+import { DegToRad } from '../math/Utils';
 import Instance from '../Instance';
 import Component from './Component';
 
@@ -9,6 +11,7 @@ class MovementComponent extends Component {
     private moveVector          : Vector4;
     private speed               : number;
     private camera              : Camera;
+    private cameraAngle         : Vector3;
 
     public static className     : string = "movementComponent";
 
@@ -19,18 +22,26 @@ class MovementComponent extends Component {
         this.moveVector = vec4(0.0);
         this.speed = 1 / 10;
         this.camera = null;
+        this.cameraAngle = vec3(0.0, DegToRad(215), DegToRad(45));
     }
 
     private updateCamera(): void {
         let camera = this.instance.getScene().getCamera(),
             position = this.instance.getPosition(),
             
-            x = position.x * GRID_SIZE + GRID_SIZE / 2,
-            y = position.y * GRID_SIZE,
-            z = position.z * GRID_SIZE + GRID_SIZE / 2;
+            xt = position.x * GRID_SIZE + GRID_SIZE / 2,
+            yt = position.y * GRID_SIZE,
+            zt = position.z * GRID_SIZE + GRID_SIZE / 2,
+            
+            c = Math.cos(this.cameraAngle.z),
+            xf = xt + 30 * Math.cos(this.cameraAngle.y) * c,
+            yf = yt + 30 * Math.sin(this.cameraAngle.z),
+            zf = zt - 30 * Math.sin(this.cameraAngle.y) * c;
 
-        camera.setTarget(x, y, z);
-        camera.setPosition(x - 20, y + 20, z + 20);
+        camera.setTarget(xt, yt, zt);
+        camera.setPosition(xf, yf, zf);
+
+        this.instance.setRotation(this.cameraAngle.x, this.cameraAngle.y, -this.cameraAngle.z);
     }
 
     public start(): void {

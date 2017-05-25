@@ -28,11 +28,11 @@ abstract class DungeonFactory {
         geometry.addTriangle(ind + 1, ind + 3, ind + 2);
     }
 
-    private static addWall(geometry: Geometry, x: number, z: number, uvs: Array<number>, horizontal: boolean): void {
+    private static addWall(geometry: Geometry, x: number, z: number, uvs: Array<number>, horizontal: boolean, flip: boolean): void {
         x *= GRID_SIZE;
         z *= GRID_SIZE;
         let w = GRID_SIZE,
-            h = GRID_SIZE * 2,
+            h = GRID_SIZE * 1.5,
             ind = geometry.verticesCount;
 
         if (horizontal) {
@@ -52,8 +52,13 @@ abstract class DungeonFactory {
         geometry.addTextCoord(uvs[0], uvs[1]);
         geometry.addTextCoord(uvs[2], uvs[1]);
 
-        geometry.addTriangle(ind + 0, ind + 1, ind + 2);
-        geometry.addTriangle(ind + 1, ind + 3, ind + 2);
+        if (flip) {
+            geometry.addTriangle(ind + 0, ind + 2, ind + 1);
+            geometry.addTriangle(ind + 1, ind + 2, ind + 3);
+        } else {
+            geometry.addTriangle(ind + 0, ind + 1, ind + 2);
+            geometry.addTriangle(ind + 1, ind + 3, ind + 2);
+        }
     }
 
     private static generateMap(): Array<Array<string>> {
@@ -89,15 +94,14 @@ abstract class DungeonFactory {
                     DungeonFactory.addFloor(geometry, x, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR]);
                 } else if (tile == '#') {
                     let lt = (map[z][x-1] == '.')? true : false,
-                        bt = (map[z+1] && map[z+1][x] == '.')? true : false;
+                        rt = (map[z][x+1] == '.')? true : false,
+                        bt = (map[z+1] && map[z+1][x] == '.')? true : false,
+                        tt = (map[z-1] && map[z-1][x] == '.')? true : false;
 
-                    if (bt) {
-                        DungeonFactory.addWall(geometry, x, z+1, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], true);
-                    }
-
-                    if (lt) {
-                        DungeonFactory.addWall(geometry, x, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], false);
-                    }
+                    if (bt) { DungeonFactory.addWall(geometry, x, z+1, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], true, false); }
+                    if (tt) { DungeonFactory.addWall(geometry, x, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], true, true); }
+                    if (lt) { DungeonFactory.addWall(geometry, x, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], false, false); }
+                    if (rt) { DungeonFactory.addWall(geometry, x+1, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], false, true); }
                 }
             }
         }
