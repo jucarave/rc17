@@ -5,6 +5,12 @@ import Instance from '../Instance';
 import { Data, TILESETS, TILESETS_UVS } from '../Data';
 import { GRID_SIZE } from '../engine/Constants';
 import Scene from '../scenes/Scene';
+import { TileFactory, MapTile } from './TileFactory';
+
+export interface Dungeon {
+    map: Array<Array<MapTile>>,
+    instance: Instance
+}
 
 abstract class DungeonFactory {
     private static addFloor(geometry: Geometry, x: number, z: number, uvs: Array<number>): void {
@@ -61,42 +67,58 @@ abstract class DungeonFactory {
         }
     }
 
-    private static generateMap(): Array<Array<string>> {
-        let ret: Array<Array<string>> = [
-            ['#', '#', '#', '#', '#', '#', '#', '#', '#',  '',  '',  '',  '',  '',  ''],
-            ['#', '.', '.', '.', '.', '.', '.', '.', '#', '#', '#', '#', '#', '#', '#'],
-            ['#', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '#'],
-            ['#', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '#'],
-            ['#', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '#'],
-            ['#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
-            ['#', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '#'],
-            ['#', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '#'],
-            ['#', '.', '.', '.', '.', '.', '.', '.', '#', '#', '#', '#', '#', '#', '#'],
-            ['#', '#', '#', '#', '#', '#', '#', '#', '#',  '',  '',  '',  '',  '',  '']
+    private static generateMap(): Array<Array<number>> {
+        let ret: Array<Array<number>> = [
+            [ 5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0,  0,  0,  0,  0],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  5,  5,  5,  5,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  5,  5,  5,  5,  5],
+            [ 5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0,  0,  0,  0,  0]
         ];
 
         return ret;
     }
 
-    public static createDungeon(scene: Scene, renderer: Renderer): Instance {
+    private static parseMap(map: Array<Array<number>>): Array<Array<MapTile>> {
+        let ret: Array<Array<MapTile>> = [],
+            w = map[0].length,
+            h = map.length;
+
+        for (let y=0;y<h;y++) {
+            ret[y] = [];
+
+            for (let x=0;x<w;x++) {
+                ret[y][x] = TileFactory.getTile(map[y][x]);
+            }
+        }
+
+        return ret;
+    };
+
+    public static createDungeon(scene: Scene, renderer: Renderer): Dungeon {
         let geometry: Geometry = new Geometry(),
             tileset = Data.tileset[TILESETS.DUNGEON],
             material: DungeonMaterial = new DungeonMaterial(renderer, tileset.texture),
-            map = this.generateMap();
+            map = this.parseMap(this.generateMap());
         
         let w = map[0].length,
             h = map.length;
         for (let x=0;x<w;x++) {
             for (let z=0;z<h;z++) {
-                let tile = map[z][x];
+                let tile = (map[z][x] && map[z][x].code)? map[z][x].code : 0;
 
-                if (tile == '.') {
+                if (tile == TileFactory.TILES.FLOOR) {
                     DungeonFactory.addFloor(geometry, x, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR]);
-                } else if (tile == '#') {
-                    let lt = (map[z][x-1] == '.')? true : false,
-                        rt = (map[z][x+1] == '.')? true : false,
-                        bt = (map[z+1] && map[z+1][x] == '.')? true : false,
-                        tt = (map[z-1] && map[z-1][x] == '.')? true : false;
+                } else if (tile == TileFactory.TILES.WALL) {
+                    let lt = (map[z][x-1] && !map[z][x-1].solid)? true : false,
+                        rt = (map[z][x+1] && !map[z][x+1].solid)? true : false,
+                        bt = (map[z+1] && map[z+1][x] && !map[z+1][x].solid)? true : false,
+                        tt = (map[z-1] && map[z-1][x] && !map[z-1][x].solid)? true : false;
 
                     if (bt) { DungeonFactory.addWall(geometry, x, z+1, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], true, false); }
                     if (tt) { DungeonFactory.addWall(geometry, x, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], true, true); }
@@ -111,8 +133,11 @@ abstract class DungeonFactory {
         let instance: Instance = new Instance(scene, null, geometry, material);
         instance.isStatic = true;
 
-        return instance
+        return {
+            map, 
+            instance
+        }
     }
 }
 
-export default DungeonFactory;
+export { DungeonFactory };

@@ -37,6 +37,7 @@
 
     "src/factories/CharacterFactory.ts",
     "src/factories/DungeonFactory.ts",
+    "src/factories/TileFactory.ts",
 
     "src/math/Utils.ts",
     "src/math/Matrix4.ts",

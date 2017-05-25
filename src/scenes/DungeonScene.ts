@@ -2,7 +2,7 @@ import Renderer from '../engine/Renderer';
 import Instance from '../Instance';
 import Camera from '../engine/Camera';
 import CharacterFactory from '../factories/CharacterFactory';
-import DungeonFactory from '../factories/DungeonFactory';
+import { DungeonFactory, Dungeon } from '../factories/DungeonFactory';
 //import { DegToRad } from '../math/Utils';
 import Scene from './Scene';
 
@@ -12,6 +12,7 @@ interface InstancesMap {
 
 class DungeonScene extends Scene {
     private instances           : InstancesMap;
+    private dungeon             : Dungeon;
     
     constructor(renderer: Renderer) {
         super(renderer);
@@ -22,10 +23,11 @@ class DungeonScene extends Scene {
     }
 
     private createDungeonTest(): void {
-        let dungeon = DungeonFactory.createDungeon(this, this.renderer);
-        this.addInstance(dungeon);
+        this.dungeon = DungeonFactory.createDungeon(this, this.renderer);
+        this.addInstance(this.dungeon.instance);
 
         let player = CharacterFactory.createPlayer(this, this.renderer);
+        player.setPosition(3, 0, 3);
         this.addInstance(player);
 
         this.createCamera();
@@ -60,6 +62,12 @@ class DungeonScene extends Scene {
         } else {
             this.instances[shaderName] = [ instance ];
         }
+    }
+
+    public isSolid(x: number, z: number): boolean {
+        let map = this.dungeon.map;
+
+        return (map[z] && map[z][x] && map[z][x].solid);
     }
 
     public render(): void {

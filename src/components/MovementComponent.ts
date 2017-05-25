@@ -5,6 +5,7 @@ import { Vector3, vec3 } from '../math/Vector3';
 import { DegToRad } from '../math/Utils';
 import Instance from '../Instance';
 import Component from './Component';
+import DungeonScene from '../scenes/DungeonScene';
 
 class MovementComponent extends Component {
     private moving              : boolean;
@@ -22,7 +23,7 @@ class MovementComponent extends Component {
         this.moveVector = vec4(0.0);
         this.speed = 1 / 10;
         this.camera = null;
-        this.cameraAngle = vec3(0.0, DegToRad(215), DegToRad(45));
+        this.cameraAngle = null;
     }
 
     private updateCamera(): void {
@@ -46,8 +47,6 @@ class MovementComponent extends Component {
 
     public start(): void {
         this.moving = false;
-
-        this.updateCamera();
     }
 
     public update(): void {
@@ -78,14 +77,20 @@ class MovementComponent extends Component {
         if (this.moving) { return; }
         
         let ins = this.instance,
-            pos = ins.getPosition();
+            pos = ins.getPosition(),
+            scene: DungeonScene = <DungeonScene> ins.getScene();
 
-        this.moveVector.set(pos.x, pos.z, pos.x + xTo, pos.z + zTo);
-        this.moving = true;
+        if (!scene.isSolid(pos.x + xTo, pos.z + zTo)) {
+            this.moveVector.set(pos.x, pos.z, pos.x + xTo, pos.z + zTo);
+            this.moving = true;
+        }
     }
 
     public setCamera(camera: Camera): void {
         this.camera = camera;
+        this.cameraAngle = vec3(0.0, DegToRad(225), DegToRad(45));
+
+        this.updateCamera();
     }
 }
 
