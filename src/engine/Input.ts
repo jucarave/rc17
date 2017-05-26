@@ -11,6 +11,7 @@ class Input {
 
         document.addEventListener("mousedown", (ev: MouseEvent) => this.handleMouse(ev, 1));
         document.addEventListener("mouseup", (ev: MouseEvent) => this.handleMouse(ev, 0));
+        document.addEventListener("mousemove", (ev: MouseEvent) => this.handleMouse(ev, 2));
     }
 
     private handleKeyboard(ev: KeyboardEvent, type: number): void {

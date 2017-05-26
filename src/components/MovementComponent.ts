@@ -93,6 +93,11 @@ class MovementComponent extends Component {
         }
     }
 
+    public rotateCamera(x: number): void {
+        this.cameraAngle.add(0, DegToRad(x), 0);
+        this.updateCamera();
+    }
+
     public setCamera(camera: Camera): void {
         this.camera = camera;
         this.cameraAngle = vec3(0.0, DegToRad(225), DegToRad(45));
