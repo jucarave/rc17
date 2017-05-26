@@ -54,7 +54,8 @@ class PlayerComponent extends Component {
         this.mvComponent = this.instance.getComponent<MovementComponent>(MovementComponent.className);
         if (!this.mvComponent) { throw new Error("Player component requires Movement component to be attached"); }
 
-        this.mvComponent.setCamera(this.instance.getScene().getCamera());
+        let camera = this.instance.getScene().getCamera();
+        this.mvComponent.setCamera(camera);
 
         Input.onKeyboard((keyCode: number, type: number) => {
             let control = this.keyCodeToControl(keyCode);
@@ -65,6 +66,21 @@ class PlayerComponent extends Component {
             }
 
             this.controls[control] = type;
+        });
+
+        Input.onMouse((x: number, y: number, type: number) => {
+            if (type == 0) {
+                let dir = camera.forward,
+                    start = camera.screenToWorldCoords(x, y),
+                    end = start.clone().add(-dir.x * 100.0, -dir.y * 100.0, -dir.z * 100.0);
+
+                let len = Math.abs(end.y - start.y),
+                    f1 = start.y / len,
+                    px = Math.floor((start.x + (end.x - start.x) * f1) / 6.4),
+                    pz = Math.floor((start.z + (end.z - start.z) * f1) / 6.4);
+
+                this.mvComponent.setPosition(px, 0, pz);
+            }
         });
     }
 

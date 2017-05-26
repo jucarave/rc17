@@ -1,9 +1,10 @@
 import Renderer from '../engine/Renderer';
-import Instance from '../Instance';
 import Camera from '../engine/Camera';
+import { CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT, CAMERA_ORTHO_ZFAR, CAMERA_ORTHO_ZNEAR} from '../engine/Constants';
 import CharacterFactory from '../factories/CharacterFactory';
 import { DungeonFactory, Dungeon } from '../factories/DungeonFactory';
 //import { DegToRad } from '../math/Utils';
+import Instance from '../Instance';
 import Scene from './Scene';
 
 interface InstancesMap {
@@ -37,7 +38,7 @@ class DungeonScene extends Scene {
 
     private createCamera(): void {
         //let camera = Camera.createPerspective(DegToRad(90), this.renderer.width/this.renderer.height, 0.1, 100.0);
-        let camera = Camera.createOrthographic(this.renderer.width/10, this.renderer.height/10, 0.1, 100.0);
+        let camera = Camera.createOrthographic(CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT, CAMERA_ORTHO_ZNEAR, CAMERA_ORTHO_ZFAR);
         camera.setPosition(0, 15, 30);
         camera.setTarget(0, 0, 0);
 

@@ -1,6 +1,7 @@
 declare var Stats: any;
 
 import Renderer from './engine/Renderer';
+import {CANVAS_WIDTH, CANVAS_HEIGHT} from './engine/Constants';
 import { $ } from './math/Utils';
 import Scene from './scenes/Scene';
 import DungeonScene from './scenes/DungeonScene';
@@ -13,7 +14,7 @@ class App {
     private stats = new Stats();
 
     constructor() {
-        this.renderer = new Renderer(854, 480, $("divGame"));
+        this.renderer = new Renderer(CANVAS_WIDTH, CANVAS_HEIGHT, $("divGame"));
 
         Data.loadData(this.renderer, () => this.newGame());
     }

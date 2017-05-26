@@ -1,5 +1,6 @@
 import Matrix4 from '../math/Matrix4';
 import { Vector3, vec3 } from '../math/Vector3';
+import { CANVAS_WIDTH, CANVAS_HEIGHT, CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT } from './Constants';
 
 class Camera {
     private transform           : Matrix4;
@@ -42,14 +43,12 @@ class Camera {
             return this.transform;
         }
 
-        let cp = this.position,
-            t = this.target;
-
-        let f = vec3(cp.x - t.x, cp.y - t.y, cp.z - t.z).normalize(),
+        let f = this.forward,
             l = Vector3.cross(this.up, f).normalize(),
             u = Vector3.cross(f, l).normalize();
 
-        let x = -Vector3.dot(l, cp),
+        let cp = this.position,
+            x = -Vector3.dot(l, cp),
             y = -Vector3.dot(u, cp),
             z = -Vector3.dot(f, cp);
 
@@ -64,6 +63,34 @@ class Camera {
         this.needsUpdate = false;
 
         return this.transform;
+    }
+
+    public screenToWorldCoords(x: number, y: number): Vector3 {
+        let cw = (CANVAS_WIDTH / 2),
+            ch = (CANVAS_HEIGHT / 2),
+            ox = (x - cw) / cw * (CAMERA_ORTHO_WIDTH / 2),
+            oy = (ch - y) / ch * (CAMERA_ORTHO_HEIGHT / 2);
+
+        let f = this.forward,
+            l = Vector3.cross(this.up, f).normalize(),
+            u = Vector3.cross(f, l).normalize();
+
+        l.multiply(ox);
+        u.multiply(oy);
+
+        let world = this.position.clone();
+
+        world.add(l.x, l.y, l.z);
+        world.add(u.x, u.y, u.z);
+
+        return world;
+    }
+
+    public get forward(): Vector3 {
+        let cp = this.position,
+            t = this.target;
+
+        return vec3(cp.x - t.x, cp.y - t.y, cp.z - t.z).normalize();
     }
 
     public static createPerspective(fov: number, ratio: number, znear: number, zfar: number): Camera {

@@ -47,6 +47,10 @@ export class Vector3 {
         return this;
     }
 
+    public clone(): Vector3 {
+        return new Vector3(this.x, this.y, this.z);
+    }
+
     public get x(): number { return this._x; }
     public get y(): number { return this._y; }
     public get z(): number { return this._z; }

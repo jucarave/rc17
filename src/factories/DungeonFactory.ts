@@ -3,7 +3,7 @@ import DungeonMaterial from '../engine/materials/DungeonMaterial';
 import Renderer from '../engine/Renderer';
 import Instance from '../Instance';
 import { Data, TILESETS, TILESETS_UVS } from '../Data';
-import { GRID_SIZE } from '../engine/Constants';
+import { GRID_SIZE, WALL_SIZE } from '../engine/Constants';
 import Scene from '../scenes/Scene';
 import { TileFactory, MapTile } from './TileFactory';
 
@@ -38,7 +38,7 @@ abstract class DungeonFactory {
         x *= GRID_SIZE;
         z *= GRID_SIZE;
         let w = GRID_SIZE,
-            h = GRID_SIZE * 1.5,
+            h = WALL_SIZE,
             ind = geometry.verticesCount;
 
         if (horizontal) {

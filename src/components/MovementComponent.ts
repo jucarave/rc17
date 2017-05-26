@@ -86,6 +86,13 @@ class MovementComponent extends Component {
         }
     }
 
+    public setPosition(x: number, y: number, z: number): void {
+        this.instance.setPosition(x, y, z);
+        if (this.camera != null) {
+            this.updateCamera();
+        }
+    }
+
     public setCamera(camera: Camera): void {
         this.camera = camera;
         this.cameraAngle = vec3(0.0, DegToRad(225), DegToRad(45));
