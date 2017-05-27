@@ -1,3 +1,5 @@
+declare let astar: any;
+
 import Renderer from '../engine/Renderer';
 import Camera from '../engine/Camera';
 import { CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT, CAMERA_ORTHO_ZFAR, CAMERA_ORTHO_ZNEAR} from '../engine/Constants';
@@ -69,6 +71,23 @@ class DungeonScene extends Scene {
         let map = this.dungeon.map;
 
         return (map[z] && map[z][x] && map[z][x].solid);
+    }
+
+    public getPath(xstart: number, zstart: number, xend: number, zend: number): Array<number> {
+        let map = this.dungeon.map;
+        if (map[zend] == undefined || map[zend][xend] == undefined) { return []; }
+
+        let ret: Array<number> = [],
+            graph = this.dungeon.graph, 
+            start = graph.grid[xstart][zstart],
+            end = graph.grid[xend][zend],
+            result = astar.search(graph, start, end);
+        
+        for (let i=0,node;node=result[i];i++) {
+            ret.push(node.x, node.y);
+        }
+
+        return ret;
     }
 
     public render(): void {

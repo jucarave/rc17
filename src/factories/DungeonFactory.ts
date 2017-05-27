@@ -1,3 +1,5 @@
+declare let Graph: any;
+
 import Geometry from '../engine/geometries/Geometry';
 import DungeonMaterial from '../engine/materials/DungeonMaterial';
 import Renderer from '../engine/Renderer';
@@ -9,7 +11,8 @@ import { TileFactory, MapTile } from './TileFactory';
 
 export interface Dungeon {
     map: Array<Array<MapTile>>,
-    instance: Instance
+    instance: Instance,
+    graph: any
 }
 
 abstract class DungeonFactory {
@@ -100,11 +103,28 @@ abstract class DungeonFactory {
         return ret;
     };
 
+    private static getSolidMap(map: Array<Array<MapTile>>) {
+        let ret: Array<Array<number>> = [],
+            w = map[0].length,
+            h = map.length;
+
+        for (let x=0;x<w;x++) {
+            ret[x] = [];
+
+            for (let y=0;y<h;y++) {
+                ret[x][y] = (map[y][x] && map[y][x].solid)? 0 : 1;
+            }
+        }
+
+        return new Graph(ret);
+    }
+
     public static createDungeon(scene: Scene, renderer: Renderer): Dungeon {
         let geometry: Geometry = new Geometry(),
             tileset = Data.tileset[TILESETS.DUNGEON],
             material: DungeonMaterial = new DungeonMaterial(renderer, tileset.texture),
-            map = this.parseMap(this.generateMap());
+            map = this.parseMap(this.generateMap()),
+            graph = this.getSolidMap(map);
         
         let w = map[0].length,
             h = map.length;
@@ -135,7 +155,8 @@ abstract class DungeonFactory {
 
         return {
             map, 
-            instance
+            instance,
+            graph
         }
     }
 }

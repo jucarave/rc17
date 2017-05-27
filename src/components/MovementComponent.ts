@@ -104,6 +104,10 @@ class MovementComponent extends Component {
 
         this.updateCamera();
     }
+
+    public get isMoving(): boolean {
+        return this.moving;
+    }
 }
 
 export default MovementComponent;

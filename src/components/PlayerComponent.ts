@@ -1,6 +1,7 @@
 import Input from '../engine/Input';
 import Instance from '../Instance';
 import { Vector3, vec3 } from '../math/Vector3';
+import DungeonScene from '../scenes/DungeonScene';
 import Component from './Component';
 import MovementComponent from './MovementComponent';
 
@@ -9,6 +10,7 @@ type KeysType = 'LEFT'|'UP'|'RIGHT'|'DOWN';
 class PlayerComponent extends Component {
     private dragControl         : Vector3;
     private mvComponent         : MovementComponent;
+    private path                : Array<number>;
     private controls = {
         UP          : 0,
         DOWN        : 0,
@@ -23,6 +25,7 @@ class PlayerComponent extends Component {
 
         this.mvComponent = null;
         this.dragControl = vec3(0.0);
+        this.path = null;
     }
 
     private keyCodeToControl(keyCode: number): KeysType {
@@ -51,6 +54,15 @@ class PlayerComponent extends Component {
         if (xTo != 0 || zTo != 0) {
             this.mvComponent.moveTo(xTo, zTo);
         }
+
+        if (this.path != null && !this.mvComponent.isMoving) {
+            let coords = this.path.splice(0, 2),
+                pos = this.instance.getPosition();
+
+            this.mvComponent.moveTo(coords[0] - pos.x, coords[1] - pos.z);
+
+            if (this.path.length == 0) { this.path = null; }
+        }
     }
 
     public start(): void {
@@ -72,6 +84,8 @@ class PlayerComponent extends Component {
         });
 
         Input.onMouse((x: number, y: number, type: number) => {
+            if (this.path != null) { return; }
+
             if (type == 0) {
                 if (this.dragControl.z != 2) {
                     let dir = camera.forward,
@@ -83,7 +97,10 @@ class PlayerComponent extends Component {
                         px = Math.floor((start.x + (end.x - start.x) * f1) / 6.4),
                         pz = Math.floor((start.z + (end.z - start.z) * f1) / 6.4);
 
-                    this.mvComponent.setPosition(px, 0, pz);
+                    let scene: DungeonScene = <DungeonScene>this.instance.getScene();
+                    
+                    this.path = scene.getPath(this.instance.getPosition().x, this.instance.getPosition().z, px, pz);
+                    if (this.path.length == 0){ this.path = null; }
                 }
 
                 this.dragControl.set(0, 0, 0);
