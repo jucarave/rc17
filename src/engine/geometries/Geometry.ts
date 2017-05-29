@@ -1,6 +1,15 @@
-import { VERTICE_SIZE, TEXT_COORD_SIZE } from '../Constants';
+import { VERTICE_SIZE, TEXT_COORD_SIZE, GL_STATIC_DRAW } from '../Constants';
 import Renderer from '../Renderer';
 import Shader from '../shaders/Shader';
+
+interface CustomBuffer {
+    data: Array<number>;
+    buffer: WebGLBuffer;
+    attribute: string;
+    dataSize: number;
+    usage: number;
+    needsUpdate: boolean;
+}
 
 class Geometry {
     private vertices           : Array<number>;
@@ -10,6 +19,7 @@ class Geometry {
     private textCoordBuffer    : WebGLBuffer;
     private indexBuffer        : WebGLBuffer;
     private indexLength        : number;
+    private customBuffers      : Array<CustomBuffer>;
 
     protected renderer           : Renderer;
 
@@ -17,6 +27,7 @@ class Geometry {
         this.vertices = [];
         this.textCoords = [];
         this.triangles = [];
+        this.customBuffers = [];
     }
 
     public addVertice(x: number, y: number, z: number): void {
@@ -35,6 +46,37 @@ class Geometry {
         this.triangles.push(vert1, vert2, vert3);
     }
 
+    public createCustomBuffer(attribute: string, dataSize: number, usage: number = GL_STATIC_DRAW): CustomBuffer {
+        let buffer: CustomBuffer = {
+            attribute,
+            buffer: null,
+            data: [],
+            dataSize,
+            usage,
+            needsUpdate: false
+        };
+
+        this.customBuffers.push(buffer);
+
+        return buffer;
+    }
+
+    public getCustomBuffer(attribute: string): CustomBuffer {
+        for (let i=0,buffer;buffer=this.customBuffers[i];i++) {
+            if (buffer.attribute == attribute) {
+                return buffer;
+            }
+        }
+
+        return null;
+    }
+
+    public addCustomBufferData(buffer: CustomBuffer, data: Array<number>) {
+        if (data.length != buffer.dataSize) { throw new Error("Data is not the same size of buffer data size."); }
+
+        buffer.data = buffer.data.concat(data);
+    }
+
     public build(renderer: Renderer): void {
         this.renderer = renderer;
         let gl = renderer.GL;
@@ -51,6 +93,12 @@ class Geometry {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.triangles), gl.STATIC_DRAW);
 
+        for (let i=0,buffer;buffer=this.customBuffers[i];i++) {
+            buffer.buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(buffer.data), buffer.usage);
+        }
+
         this.indexLength = this.triangles.length;
         this.vertices = null;
         this.triangles = null;
@@ -66,6 +114,16 @@ class Geometry {
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.textCoordBuffer);
         gl.vertexAttribPointer(shader.attributes["aTextureCoords"], TEXT_COORD_SIZE, gl.FLOAT, false, 0, 0);
+
+        for (let i=0,buffer;buffer=this.customBuffers[i];i++) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
+            if (buffer.needsUpdate) {
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(buffer.data), buffer.usage);
+                buffer.needsUpdate = false;
+            }
+
+            gl.vertexAttribPointer(shader.attributes[buffer.attribute], buffer.dataSize, gl.FLOAT, false, 0, 0);
+        }
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 

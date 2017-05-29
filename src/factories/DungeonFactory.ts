@@ -3,6 +3,7 @@ declare let Graph: any;
 import Geometry from '../engine/geometries/Geometry';
 import DungeonMaterial from '../engine/materials/DungeonMaterial';
 import Renderer from '../engine/Renderer';
+import LightMap from '../engine/LightMap';
 import Instance from '../Instance';
 import { Data, TILESETS, TILESETS_UVS } from '../Data';
 import { GRID_SIZE, WALL_SIZE } from '../engine/Constants';
@@ -10,9 +11,10 @@ import Scene from '../scenes/Scene';
 import { TileFactory, MapTile } from './TileFactory';
 
 export interface Dungeon {
-    map: Array<Array<MapTile>>,
-    instance: Instance,
-    graph: any
+    map: Array<Array<MapTile>>;
+    instance: Instance;
+    graph: any;
+    lightMap: LightMap;
 }
 
 abstract class DungeonFactory {
@@ -72,16 +74,22 @@ abstract class DungeonFactory {
 
     private static generateMap(): Array<Array<number>> {
         let ret: Array<Array<number>> = [
-            [ 5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0,  0,  0,  0,  0],
-            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  5,  5,  5,  5,  5],
-            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  1,  1,  1,  1,  5],
-            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  1,  1,  1,  1,  5],
-            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  1,  1,  1,  1,  5],
-            [ 5,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  5],
-            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  1,  1,  1,  1,  5],
-            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  1,  1,  1,  1,  5],
-            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  5,  5,  5,  5,  5],
-            [ 5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0,  0,  0,  0,  0]
+            [ 5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0,  0,  0,  0,  0,  0],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  0,  5,  5,  5,  5,  5,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  0,  5,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  0,  5,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  5,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  5,  5,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  0,  5,  1,  1,  1,  1,  5],
+            [ 5,  1,  1,  1,  1,  1,  1,  1,  5,  0,  5,  1,  5,  5,  5,  5],
+            [ 5,  5,  5,  5,  1,  5,  5,  5,  5,  0,  5,  1,  5,  0,  0,  0],
+            [ 0,  0,  0,  5,  1,  5,  5,  5,  5,  5,  5,  1,  5,  0,  0,  0],
+            [ 0,  0,  0,  5,  1,  5,  5,  1,  1,  1,  1,  1,  5,  0,  0,  0],
+            [ 0,  0,  0,  5,  1,  5,  5,  1,  1,  1,  1,  1,  5,  0,  0,  0],
+            [ 0,  0,  0,  5,  1,  1,  1,  1,  1,  1,  1,  1,  5,  0,  0,  0],
+            [ 0,  0,  0,  5,  5,  5,  5,  1,  1,  1,  1,  1,  5,  0,  0,  0],
+            [ 0,  0,  0,  0,  0,  0,  5,  5,  5,  5,  5,  5,  5,  0,  0,  0]
         ];
 
         return ret;
@@ -101,7 +109,7 @@ abstract class DungeonFactory {
         }
 
         return ret;
-    };
+    }
 
     private static getSolidMap(map: Array<Array<MapTile>>) {
         let ret: Array<Array<number>> = [],
@@ -122,10 +130,11 @@ abstract class DungeonFactory {
     public static createDungeon(scene: Scene, renderer: Renderer): Dungeon {
         let geometry: Geometry = new Geometry(),
             tileset = Data.tileset[TILESETS.DUNGEON],
-            material: DungeonMaterial = new DungeonMaterial(renderer, tileset.texture),
             map = this.parseMap(this.generateMap()),
-            graph = this.getSolidMap(map);
-        
+            graph = this.getSolidMap(map),
+            lightMap = new LightMap(16, 16, renderer),
+            material: DungeonMaterial = new DungeonMaterial(renderer, tileset.texture, lightMap.texture);
+
         let w = map[0].length,
             h = map.length;
         for (let x=0;x<w;x++) {
@@ -140,10 +149,10 @@ abstract class DungeonFactory {
                         bt = (map[z+1] && map[z+1][x] && !map[z+1][x].solid)? true : false,
                         tt = (map[z-1] && map[z-1][x] && !map[z-1][x].solid)? true : false;
 
-                    if (bt) { DungeonFactory.addWall(geometry, x, z+1, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], true, false); }
+                    if (bt) { DungeonFactory.addWall(geometry, x, z+0.999, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], true, false); }
                     if (tt) { DungeonFactory.addWall(geometry, x, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], true, true); }
                     if (lt) { DungeonFactory.addWall(geometry, x, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], false, false); }
-                    if (rt) { DungeonFactory.addWall(geometry, x+1, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], false, true); }
+                    if (rt) { DungeonFactory.addWall(geometry, x+0.999, z, tileset.tiles[TILESETS_UVS.DUNGEON_FLOOR], false, true); }
                 }
             }
         }
@@ -156,7 +165,8 @@ abstract class DungeonFactory {
         return {
             map, 
             instance,
-            graph
+            graph,
+            lightMap
         }
     }
 }

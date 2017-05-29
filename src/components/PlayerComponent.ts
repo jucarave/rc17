@@ -59,7 +59,10 @@ class PlayerComponent extends Component {
             let coords = this.path.splice(0, 2),
                 pos = this.instance.getPosition();
 
-            this.mvComponent.moveTo(coords[0] - pos.x, coords[1] - pos.z);
+            this.mvComponent.moveTo(coords[0] - pos.x, coords[1] - pos.z, () => {
+                let scene: DungeonScene = <DungeonScene>this.instance.getScene();
+                scene.castLight(this.instance, 14);
+            });
 
             if (this.path.length == 0) { this.path = null; }
         }
@@ -87,7 +90,7 @@ class PlayerComponent extends Component {
             if (this.path != null) { return; }
 
             if (type == 0) {
-                if (this.dragControl.z != 2) {
+                if (this.dragControl.z != 2 && !this.mvComponent.isMoving) {
                     let dir = camera.forward,
                         start = camera.screenToWorldCoords(x, y),
                         end = start.clone().add(-dir.x * 100.0, -dir.y * 100.0, -dir.z * 100.0);

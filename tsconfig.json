@@ -20,6 +20,7 @@
     "src/engine/Camera.ts",
     "src/engine/Constants.ts",
     "src/engine/Input.ts",
+    "src/engine/LightMap.ts",
     "src/engine/Renderer.ts",
     "src/engine/Texture.ts",
 

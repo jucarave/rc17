@@ -13,6 +13,7 @@ class MovementComponent extends Component {
     private speed               : number;
     private camera              : Camera;
     private cameraAngle         : Vector3;
+    private callback            : Function;
 
     public static className     : string = "movementComponent";
 
@@ -24,6 +25,7 @@ class MovementComponent extends Component {
         this.speed = 1 / 10;
         this.camera = null;
         this.cameraAngle = null;
+        this.callback = null;
     }
 
     private updateCamera(): void {
@@ -35,9 +37,9 @@ class MovementComponent extends Component {
             zt = position.z * GRID_SIZE + GRID_SIZE / 2,
             
             c = Math.cos(this.cameraAngle.z),
-            xf = xt + 30 * Math.cos(this.cameraAngle.y) * c,
-            yf = yt + 30 * Math.sin(this.cameraAngle.z),
-            zf = zt - 30 * Math.sin(this.cameraAngle.y) * c;
+            xf = xt + 100 * Math.cos(this.cameraAngle.y) * c,
+            yf = yt + 100 * Math.sin(this.cameraAngle.z),
+            zf = zt - 100 * Math.sin(this.cameraAngle.y) * c;
 
         camera.setTarget(xt, yt, zt);
         camera.setPosition(xf, yf, zf);
@@ -65,6 +67,11 @@ class MovementComponent extends Component {
                 this.instance.setPosition(this.moveVector.z, 0.0, this.moveVector.w, false);
                 this.moving = false;
                 this.moveVector.set(0.0, 0.0, 0.0, 0.0);
+
+                if (this.callback) {
+                    this.callback();
+                    this.callback = null;
+                }
             }
 
             if (this.camera != null) {
@@ -73,7 +80,7 @@ class MovementComponent extends Component {
         }
     }
 
-    public moveTo(xTo: number, zTo: number): void {
+    public moveTo(xTo: number, zTo: number, callback?: Function): void {
         if (this.moving) { return; }
         
         let ins = this.instance,
@@ -83,6 +90,10 @@ class MovementComponent extends Component {
         if (!scene.isSolid(pos.x + xTo, pos.z + zTo)) {
             this.moveVector.set(pos.x, pos.z, pos.x + xTo, pos.z + zTo);
             this.moving = true;
+
+            if (callback) {
+                this.callback = callback;
+            }
         }
     }
 

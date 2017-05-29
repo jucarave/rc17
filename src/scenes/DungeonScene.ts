@@ -16,6 +16,7 @@ interface InstancesMap {
 class DungeonScene extends Scene {
     private instances           : InstancesMap;
     private dungeon             : Dungeon;
+    private player              : Instance;
     
     constructor(renderer: Renderer) {
         super(renderer);
@@ -31,11 +32,14 @@ class DungeonScene extends Scene {
 
         let player = CharacterFactory.createPlayer(this, this.renderer);
         player.setPosition(3, 0, 3);
+        this.player = player;
         this.addInstance(player);
 
         this.createCamera();
 
         this.initScene();
+
+        this.castLight(player, 14);
     }
 
     private createCamera(): void {
@@ -57,6 +61,42 @@ class DungeonScene extends Scene {
         }
     }
 
+    private castLightRay(x1: number, z1: number, x2: number, z2: number, distance: number): void {
+        let map = this.dungeon.map,
+            lm = this.dungeon.lightMap,
+            x = x2 - x1,
+            z = z1 - z2,
+            ang = Math.atan2(z, x),
+            jx = Math.cos(ang) * 0.5,
+            jz = -Math.sin(ang) * 0.5,
+            rx = x1 + 0.49,
+            rz = z1 + 0.49,
+            cx: number, cz: number,
+            search: boolean = true,
+            d = 0,
+            md = distance / 2;
+
+        while (search) {
+            cx = Math.round(rx);
+            cz = Math.round(rz);
+
+            if (!map[cz]) { search = false; continue; }
+            if (!map[cz][cx]) { search = false; continue; }
+
+            lm.lightTile(cx, cz);
+            if (this.isSolid(cx, cz)) {
+                search = false;
+            }
+
+            if (d++ >= md) {
+                search = false;
+            }
+
+            rx += jx;
+            rz += jz;
+        }
+    }
+
     public addInstance(instance: Instance): void {
         let shaderName = instance.getShaderName();
 
@@ -75,7 +115,7 @@ class DungeonScene extends Scene {
 
     public getPath(xstart: number, zstart: number, xend: number, zend: number): Array<number> {
         let map = this.dungeon.map;
-        if (map[zend] == undefined || map[zend][xend] == undefined) { return []; }
+        if (map[zstart] == undefined || map[zend] == undefined || map[zend][xend] == undefined) { return []; }
 
         let ret: Array<number> = [],
             graph = this.dungeon.graph, 
@@ -88,6 +128,21 @@ class DungeonScene extends Scene {
         }
 
         return ret;
+    }
+
+    public castLight(instance: Instance, distance: number): void {
+        let d = distance / 2,
+            x = instance.getPosition().x,
+            z = instance.getPosition().z;
+
+        for (let i=0;i<=distance;i++) {
+            this.castLightRay(x, z, x - d, z - d + i, distance);
+            this.castLightRay(x, z, x + d, z - d + i, distance);
+            this.castLightRay(x, z, x - d + i, z - d, distance);
+            this.castLightRay(x, z, x - d + i, z + d, distance);
+        }
+
+        this.dungeon.lightMap.update();
     }
 
     public render(): void {

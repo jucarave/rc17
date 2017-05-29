@@ -1,3 +1,5 @@
+import { LITTLE_ENDIAN } from '../engine/Constants';
+
 export function $(elementId: string): HTMLElement {
     return document.getElementById(elementId);
 }
@@ -19,4 +21,12 @@ export function loadJSON(url: string, callback: Function): void {
 
     http.open("GET", url, true);
     http.send();
+}
+
+export function col(r: number, g: number, b: number, a: number): number {
+    if (LITTLE_ENDIAN) {
+        return (a << 24 | b << 16 | g << 8 | r);
+    } else {
+        return (r << 24 | g << 16 | b << 8 | a);
+    }
 }
