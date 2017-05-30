@@ -11,7 +11,7 @@ class LightMap {
     private pix32bit                : Uint32Array;
 
     private static light            : number = col(255, 255, 255, 255);
-    private static shadow           : number = col(60, 60, 122, 255);
+    private static shadow           : number = col(122, 122, 122, 255);
 
     public readonly texture         : WebGLTexture;
 

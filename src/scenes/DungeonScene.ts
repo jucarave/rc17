@@ -39,7 +39,7 @@ class DungeonScene extends Scene {
 
         this.initScene();
 
-        this.castLight(player, 14);
+        this.castLight(player, 8);
     }
 
     private createCamera(): void {
@@ -62,38 +62,38 @@ class DungeonScene extends Scene {
     }
 
     private castLightRay(x1: number, z1: number, x2: number, z2: number, distance: number): void {
-        let map = this.dungeon.map,
-            lm = this.dungeon.lightMap,
-            x = x2 - x1,
-            z = z1 - z2,
-            ang = Math.atan2(z, x),
-            jx = Math.cos(ang) * 0.5,
-            jz = -Math.sin(ang) * 0.5,
-            rx = x1 + 0.49,
-            rz = z1 + 0.49,
-            cx: number, cz: number,
-            search: boolean = true,
-            d = 0,
-            md = distance / 2;
+        let dx = Math.abs(x2 - x1),
+            dz = Math.abs(z2 - z1),
+            
+            sx = (x2 > x1)? 1 : -1,
+            sz = (z2 > z1)? 1 : -1,
+            
+            err = dx-dz,
+            d = 0;
 
-        while (search) {
-            cx = Math.round(rx);
-            cz = Math.round(rz);
+        let x0=x1, z0=z1;
+        let dis = (x: number, z: number) => {
+            return Math.sqrt(x*x + z*z);
+        };
 
-            if (!map[cz]) { search = false; continue; }
-            if (!map[cz][cx]) { search = false; continue; }
+        while (true) {
+            this.dungeon.lightMap.lightTile(x1, z1);
 
-            lm.lightTile(cx, cz);
-            if (this.isSolid(cx, cz)) {
-                search = false;
+            d += dis(x1-x0,z1-z0);
+            if (d >= distance || this.isSolid(x1, z1)) {
+                return;
             }
 
-            if (d++ >= md) {
-                search = false;
+            let e2 = err * 2;
+            if (e2 > -dx) {
+                err -= dz;
+                x1 += sx;
             }
 
-            rx += jx;
-            rz += jz;
+            if (e2 < dx) {
+                err += dx;
+                z1 += sz;
+            }
         }
     }
 
@@ -131,15 +131,16 @@ class DungeonScene extends Scene {
     }
 
     public castLight(instance: Instance, distance: number): void {
-        let d = distance / 2,
+        let d = distance,
+            d_2 = distance / 2,
             x = instance.getPosition().x,
             z = instance.getPosition().z;
 
-        for (let i=0;i<=distance;i++) {
-            this.castLightRay(x, z, x - d, z - d + i, distance);
-            this.castLightRay(x, z, x + d, z - d + i, distance);
-            this.castLightRay(x, z, x - d + i, z - d, distance);
-            this.castLightRay(x, z, x - d + i, z + d, distance);
+        for (let i=0;i<=distance*2;i++) {
+            this.castLightRay(x, z, x - d, z - d + i, d_2);
+            this.castLightRay(x, z, x + d, z - d + i, d_2);
+            this.castLightRay(x, z, x - d + i, z - d, d_2);
+            this.castLightRay(x, z, x - d + i, z + d, d_2);
         }
 
         this.dungeon.lightMap.update();

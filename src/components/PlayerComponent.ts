@@ -61,7 +61,7 @@ class PlayerComponent extends Component {
 
             this.mvComponent.moveTo(coords[0] - pos.x, coords[1] - pos.z, () => {
                 let scene: DungeonScene = <DungeonScene>this.instance.getScene();
-                scene.castLight(this.instance, 14);
+                scene.castLight(this.instance, 8);
             });
 
             if (this.path.length == 0) { this.path = null; }
