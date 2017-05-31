@@ -8,6 +8,10 @@ export function DegToRad(degrees: number): number {
     return degrees * Math.PI / 180.0;
 }
 
+export function getDistance(x: number, y: number): number {
+    return Math.sqrt(x*x + y*y);
+}
+
 export function loadJSON(url: string, callback: Function): void {
     let http = new XMLHttpRequest();
 

@@ -5,7 +5,7 @@ import Camera from '../engine/Camera';
 import { CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT, CAMERA_ORTHO_ZFAR, CAMERA_ORTHO_ZNEAR} from '../engine/Constants';
 import CharacterFactory from '../factories/CharacterFactory';
 import { DungeonFactory, Dungeon } from '../factories/DungeonFactory';
-//import { DegToRad } from '../math/Utils';
+import { getDistance/*, DegToRad*/ } from '../math/Utils';
 import Instance from '../Instance';
 import Scene from './Scene';
 
@@ -72,14 +72,11 @@ class DungeonScene extends Scene {
             d = 0;
 
         let x0=x1, z0=z1;
-        let dis = (x: number, z: number) => {
-            return Math.sqrt(x*x + z*z);
-        };
 
         while (true) {
-            this.dungeon.lightMap.lightTile(x1, z1);
+            this.dungeon.lightMap.lightTile(x1, z1, 10-d/distance*10);
 
-            d += dis(x1-x0,z1-z0);
+            d += getDistance(x1-x0,z1-z0);
             if (d >= distance || this.isSolid(x1, z1)) {
                 return;
             }

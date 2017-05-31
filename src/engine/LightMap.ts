@@ -10,7 +10,7 @@ class LightMap {
     private pix8bit                 : Uint8Array;
     private pix32bit                : Uint32Array;
 
-    private static light            : number = col(255, 255, 255, 255);
+    //private static light            : number = col(255, 255, 255, 255);
     private static shadow           : number = col(122, 122, 122, 255);
 
     public readonly texture         : WebGLTexture;
@@ -64,8 +64,11 @@ class LightMap {
                     this.plot(x, z, LightMap.shadow);
                     this.lightMap[z][x] = 1;
                     needsUpdate = true;
-                } else if (tile == 3) {
-                    this.plot(x, z, LightMap.light);
+                } else if (tile > 2) {
+                    let str = (((tile - 2) / 10 * 122) << 0) + 123,
+                        color = col(str, str, str, 255);
+
+                    this.plot(x, z, color);
                     this.lightMap[z][x] = 2;
                     needsUpdate = true;
                 }
@@ -77,8 +80,8 @@ class LightMap {
         }
     }
 
-    public lightTile(x: number, z: number) {
-        this.lightMap[z][x] = 3;
+    public lightTile(x: number, z: number, strength: number) {
+        this.lightMap[z][x] = strength + 2;
     }
 }
 
