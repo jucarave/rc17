@@ -81,6 +81,7 @@ class LightMap {
     }
 
     public lightTile(x: number, z: number, strength: number) {
+        if (strength < this.lightMap[z][x] - 2) { return; }
         this.lightMap[z][x] = strength + 2;
     }
 }

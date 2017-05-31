@@ -15,7 +15,7 @@ class MovementComponent extends Component {
     private cameraAngle         : Vector3;
     private callback            : Function;
 
-    public static className     : string = "movementComponent";
+    public static readonly className     : string = "movementComponent";
 
     constructor(instance: Instance) {
         super(instance, MovementComponent.className);

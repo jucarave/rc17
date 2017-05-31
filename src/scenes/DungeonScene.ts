@@ -6,6 +6,7 @@ import { CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT, CAMERA_ORTHO_ZFAR, CAMERA_ORTH
 import CharacterFactory from '../factories/CharacterFactory';
 import { DungeonFactory, Dungeon } from '../factories/DungeonFactory';
 import { getDistance/*, DegToRad*/ } from '../math/Utils';
+import PlayerComponent from '../components/PlayerComponent';
 import Instance from '../Instance';
 import Scene from './Scene';
 
@@ -39,7 +40,7 @@ class DungeonScene extends Scene {
 
         this.initScene();
 
-        this.castLight(player, 8);
+        this.castLight(player, PlayerComponent.losDistance);
     }
 
     private createCamera(): void {

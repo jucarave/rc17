@@ -18,7 +18,8 @@ class PlayerComponent extends Component {
         RIGHT       : 0
     };
 
-    public static className     : string = "playerComponent";
+    public static readonly className     : string = "playerComponent";
+    public static readonly losDistance   : number = 30;
 
     constructor(instance: Instance) {
         super(instance, PlayerComponent.className);
@@ -61,7 +62,7 @@ class PlayerComponent extends Component {
 
             this.mvComponent.moveTo(coords[0] - pos.x, coords[1] - pos.z, () => {
                 let scene: DungeonScene = <DungeonScene>this.instance.getScene();
-                scene.castLight(this.instance, 8);
+                scene.castLight(this.instance, PlayerComponent.losDistance);
             });
 
             if (this.path.length == 0) { this.path = null; }
