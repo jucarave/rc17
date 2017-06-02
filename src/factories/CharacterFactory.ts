@@ -24,6 +24,8 @@ abstract class CharacterFactory {
 
         instance.setRotation(0, DegToRad(-45), 0);
 
+        instance.isBillboard = true;
+
         return instance;
     }
 
@@ -39,6 +41,8 @@ abstract class CharacterFactory {
         instance.addComponent(new MovementComponent(instance));
 
         instance.setRotation(0, DegToRad(-45), 0);
+
+        instance.isBillboard = true;
 
         return instance;
     }

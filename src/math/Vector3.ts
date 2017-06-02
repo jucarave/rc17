@@ -51,6 +51,10 @@ export class Vector3 {
         return new Vector3(this.x, this.y, this.z);
     }
 
+    public equals(vector3: Vector3): boolean {
+        return (this.x == vector3.x && this.y == vector3.y && this.z == vector3.z);
+    }
+
     public get x(): number { return this._x; }
     public get y(): number { return this._y; }
     public get z(): number { return this._z; }

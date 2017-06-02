@@ -55,7 +55,14 @@ class Instance {
         return this;
     }
 
-    public getTransformation(): Matrix4 {
+    public getTransformation(camera: Camera): Matrix4 {
+        if (this.isBillboard) {
+            let angle = camera.getAngle();
+            if (!this.rotation.equals(angle)) {
+                this.setRotation(angle.x, angle.y, angle.z);
+            }
+        }
+
         if (!this.needsUpdate) {
             return this.transform;
         }
@@ -143,7 +150,7 @@ class Instance {
             
             transform = Matrix4.createIdentity();
 
-        transform = Matrix4.multiply(transform, this.getTransformation());
+        transform = Matrix4.multiply(transform, this.getTransformation(camera));
         transform = Matrix4.multiply(transform, camera.getTransformation());
 
         gl.uniformMatrix4fv(shader.uniforms["uProjection"], false, camera.projection);

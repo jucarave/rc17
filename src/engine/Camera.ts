@@ -48,6 +48,10 @@ class Camera {
         return this;
     }
 
+    public getAngle(): Vector3 {
+        return this.angle;
+    }
+
     public getTransformation(): Matrix4 {
         if (!this.needsUpdate) {
             return this.transform;
