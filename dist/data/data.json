@@ -3,13 +3,19 @@
         {
             "src": "img/Characters.png",
             "name": "characters",
-            "width": 64,
+            "width": 128,
             "height": 64,
             "animations": {
                 "hero_stand" : {
                     "speed": 0.16,
                     "frames": [
                         [0, 0, 64, 64]
+                    ]
+                },
+                "rat_stand" : {
+                    "speed": 0.16,
+                    "frames": [
+                        [64, 0, 64, 64]
                     ]
                 }
             }

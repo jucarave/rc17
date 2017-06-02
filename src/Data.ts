@@ -34,7 +34,8 @@ export let SPRITES = {
 };
 
 export let ANIMATIONS = {
-    HERO_STAND: "hero_stand"
+    HERO_STAND: "hero_stand",
+    RAT_STAND: "rat_stand"
 };
 
 export let TILESETS = {

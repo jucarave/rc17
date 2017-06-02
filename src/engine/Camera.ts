@@ -7,6 +7,7 @@ class Camera {
     private position            : Vector3;
     private target              : Vector3;
     private up                  : Vector3;
+    private angle               : Vector3;
     private needsUpdate         : boolean;
 
     public readonly projection          : Matrix4;
@@ -18,6 +19,7 @@ class Camera {
         this.position = vec3(0, 0, 0);
         this.target = vec3(0, 0, 0);
         this.up = vec3(0, 1, 0);
+        this.angle = vec3(0.0);
 
         this.needsUpdate = true;
     }
@@ -32,6 +34,14 @@ class Camera {
 
     public setTarget(x: number, y: number, z: number): Camera {
         this.target.set(x, y, z);
+
+        this.needsUpdate = true;
+
+        return this;
+    }
+
+    public setAngle(x: number, y: number, z: number): Camera {
+        this.angle.set(x, y, z);
 
         this.needsUpdate = true;
 

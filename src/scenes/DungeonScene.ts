@@ -6,6 +6,7 @@ import { CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT, CAMERA_ORTHO_ZFAR, CAMERA_ORTH
 import CharacterFactory from '../factories/CharacterFactory';
 import { DungeonFactory, Dungeon } from '../factories/DungeonFactory';
 import { getDistance/*, DegToRad*/ } from '../math/Utils';
+import { vec3 } from '../math/Vector3';
 import PlayerComponent from '../components/PlayerComponent';
 import Instance from '../Instance';
 import Scene from './Scene';
@@ -31,10 +32,11 @@ class DungeonScene extends Scene {
         this.dungeon = DungeonFactory.createDungeon(this, this.renderer);
         this.addInstance(this.dungeon.instance);
 
-        let player = CharacterFactory.createPlayer(this, this.renderer);
-        player.setPosition(3, 0, 3);
+        let player = CharacterFactory.createPlayer(this, this.renderer, vec3(3, 0, 3));
         this.player = player;
         this.addInstance(player);
+
+        this.addInstance(CharacterFactory.createEnemy(this, this.renderer, vec3(7, 0, 4)));
 
         this.createCamera();
 

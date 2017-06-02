@@ -20,6 +20,7 @@ class Instance {
     private needsUpdate         : boolean;
 
     public isStatic             : boolean;
+    public isBillboard          : boolean;
 
     constructor(scene: Scene, position?: Vector3, geometry?: Geometry, material?: Material) {
         this.scene = scene;
@@ -31,6 +32,7 @@ class Instance {
         this.components = [];
         this.needsUpdate = true;
         this.isStatic = false;
+        this.isBillboard = false;
     }
 
     public setPosition(x: number, y: number, z: number, relative: boolean = false): Instance {

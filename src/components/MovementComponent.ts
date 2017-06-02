@@ -43,8 +43,7 @@ class MovementComponent extends Component {
 
         camera.setTarget(xt, yt, zt);
         camera.setPosition(xf, yf, zf);
-
-        this.instance.setRotation(this.cameraAngle.x, this.cameraAngle.y, -this.cameraAngle.z);
+        camera.setTarget(this.cameraAngle.x, this.cameraAngle.y, -this.cameraAngle.z);
     }
 
     public start(): void {
