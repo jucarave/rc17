@@ -14,7 +14,7 @@ class SpriteMaterial extends Material {
     private currentAnim     : string;
 
     constructor(renderer: Renderer, texture: Texture) {
-        super(renderer, 'BASIC');
+        super(renderer, 'BASIC', false);
 
         this.texture = texture;
         this.animations = {};

@@ -9,7 +9,11 @@ export function DegToRad(degrees: number): number {
 }
 
 export function getDistance(x: number, y: number): number {
-    return Math.sqrt(x*x + y*y);
+    return Math.sqrt(squaredDist(x, y));
+}
+
+export function squaredDist(x: number, y: number): number {
+    return x*x + y*y;
 }
 
 export function loadJSON(url: string, callback: Function): void {

@@ -8,7 +8,7 @@ class DungeonMaterial extends Material {
     private lightTexture    : WebGLTexture;
 
     constructor(renderer: Renderer, texture: Texture, lightTexture: WebGLTexture) {
-        super(renderer, 'DUNGEON');
+        super(renderer, 'DUNGEON', true);
 
         this.texture = texture;
         this.lightTexture = lightTexture;

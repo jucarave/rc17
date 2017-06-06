@@ -21,6 +21,7 @@ class Instance {
 
     public isStatic             : boolean;
     public isBillboard          : boolean;
+    public distanceToCamera     : number;
 
     constructor(scene: Scene, position?: Vector3, geometry?: Geometry, material?: Material) {
         this.scene = scene;
@@ -53,6 +54,10 @@ class Instance {
         this.needsUpdate = true;
 
         return this;
+    }
+
+    public getMaterial(): Material {
+        return this.material;
     }
 
     public getTransformation(camera: Camera): Matrix4 {

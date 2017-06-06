@@ -5,14 +5,16 @@ import Camera from '../engine/Camera';
 import { CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT, CAMERA_ORTHO_ZFAR, CAMERA_ORTHO_ZNEAR} from '../engine/Constants';
 import CharacterFactory from '../factories/CharacterFactory';
 import { DungeonFactory, Dungeon } from '../factories/DungeonFactory';
-import { getDistance/*, DegToRad*/ } from '../math/Utils';
+import { getDistance, squaredDist/*, DegToRad*/ } from '../math/Utils';
 import { vec3 } from '../math/Vector3';
 import PlayerComponent from '../components/PlayerComponent';
 import Instance from '../Instance';
 import Scene from './Scene';
 
 interface InstancesMap {
-    [index: string]: Array<Instance>
+    list: Array<Instance>,
+    opaques: Array<Instance>,
+    transparent: Array<Instance>
 }
 
 class DungeonScene extends Scene {
@@ -23,7 +25,11 @@ class DungeonScene extends Scene {
     constructor(renderer: Renderer) {
         super(renderer);
 
-        this.instances = {};
+        this.instances = {
+            list: [],
+            opaques: [],
+            transparent: []
+        };
 
         this.createDungeonTest();
     }
@@ -55,12 +61,8 @@ class DungeonScene extends Scene {
     }
 
     private initScene(): void {
-        for (let j in this.instances) {
-            let instances = this.instances[j];
-            
-            for (let i=0,ins;ins=instances[i];i++) {
-                ins.awake();
-            }
+        for (let i=0,ins;ins=this.instances.list[i];i++) {
+            ins.awake();
         }
     }
 
@@ -98,12 +100,23 @@ class DungeonScene extends Scene {
     }
 
     public addInstance(instance: Instance): void {
-        let shaderName = instance.getShaderName();
+        let shaderName = instance.getShaderName(),
+            opaque = instance.getMaterial().isOpaque,
+            list = (opaque)? this.instances.opaques : this.instances.transparent;
 
-        if (this.instances[shaderName]) {
-            this.instances[shaderName].push(instance);
+        this.instances.list.push(instance);
+
+        for (let i=0,ins;ins=list[i];i++){
+            if (ins.getShaderName() == shaderName) {
+                list.splice(i, 0, instance);
+                return;
+            }
+        }
+        
+        if (opaque) {
+            this.instances.opaques.push(instance);
         } else {
-            this.instances[shaderName] = [ instance ];
+            this.instances.transparent.push(instance);
         }
     }
 
@@ -147,16 +160,27 @@ class DungeonScene extends Scene {
     }
 
     public render(): void {
-        for (let j in this.instances) {
-            let instances = this.instances[j];
+        let cp = this.camera.getPosition();
 
-            for (let i=0,ins;ins=instances[i];i++) {
-                ins.update();
-            }
+        for (let i=0,ins;ins=this.instances.list[i];i++) {
+            ins.update();
 
-            for (let i=0,ins;ins=instances[i];i++) {
-                ins.render(this.renderer, this.camera);
+            if (!ins.getMaterial().isOpaque) {
+                let ip = ins.getPosition();
+                ins.distanceToCamera = squaredDist(ip.x - cp.x, ip.z - cp.z);
             }
+        }
+
+        for (let i=0,ins;ins=this.instances.opaques[i];i++) {
+            ins.render(this.renderer, this.camera);
+        }
+
+        this.instances.transparent.sort((a: Instance, b: Instance) => {
+            return (b.distanceToCamera < a.distanceToCamera)? -1 : 1;
+        });
+
+        for (let i=0,ins;ins=this.instances.transparent[i];i++) {
+            ins.render(this.renderer, this.camera);
         }
     }
 }

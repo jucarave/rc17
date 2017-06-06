@@ -24,6 +24,10 @@ class Camera {
         this.needsUpdate = true;
     }
 
+    public getPosition(): Vector3 {
+        return this.position;
+    }
+
     public setPosition(x: number, y: number, z: number): Camera {
         this.position.set(x, y, z);
 
