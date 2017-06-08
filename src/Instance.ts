@@ -6,6 +6,7 @@ import Material from './engine/materials/Material';
 import Shader from './engine/shaders/Shader';
 import Matrix4 from './math/Matrix4';
 import { Vector3, vec3 } from './math/Vector3';
+import { squaredDist } from './math/Utils';
 import Component from './components/Component';
 import Scene from './scenes/Scene';
 
@@ -132,9 +133,16 @@ class Instance {
         }
     }
 
-    public update(): void {
+    public update(camera: Camera): void {
         for (let i=0,component;component=this.components[i];i++) {
             component.update();
+        }
+
+        if (this.needsUpdate || !camera.isUpdated) {
+            let ip = this.getPosition(),
+                cp = camera.getPosition();
+
+            this.distanceToCamera = squaredDist(ip.x - cp.x, ip.z - cp.z);
         }
     }
 
@@ -164,6 +172,10 @@ class Instance {
         this.material.render();
 
         this.geometry.render();
+    }
+
+    public get isUpdated(): boolean {
+        return !this.needsUpdate;
     }
 }
 

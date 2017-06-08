@@ -111,6 +111,10 @@ class Camera {
         return vec3(cp.x - t.x, cp.y - t.y, cp.z - t.z).normalize();
     }
 
+    public get isUpdated(): boolean {
+        return !this.needsUpdate;
+    }
+
     public static createPerspective(fov: number, ratio: number, znear: number, zfar: number): Camera {
         return new Camera(Matrix4.createPerspective(fov, ratio, znear, zfar));
     }

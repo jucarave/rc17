@@ -5,7 +5,7 @@ import Camera from '../engine/Camera';
 import { CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT, CAMERA_ORTHO_ZFAR, CAMERA_ORTHO_ZNEAR} from '../engine/Constants';
 import CharacterFactory from '../factories/CharacterFactory';
 import { DungeonFactory, Dungeon } from '../factories/DungeonFactory';
-import { getDistance, squaredDist/*, DegToRad*/ } from '../math/Utils';
+import { getDistance/*, DegToRad*/ } from '../math/Utils';
 import { vec3 } from '../math/Vector3';
 import PlayerComponent from '../components/PlayerComponent';
 import Instance from '../Instance';
@@ -160,24 +160,23 @@ class DungeonScene extends Scene {
     }
 
     public render(): void {
-        let cp = this.camera.getPosition();
+        let updated = false;
 
         for (let i=0,ins;ins=this.instances.list[i];i++) {
-            ins.update();
+            ins.update(this.camera);
 
-            if (!ins.getMaterial().isOpaque) {
-                let ip = ins.getPosition();
-                ins.distanceToCamera = squaredDist(ip.x - cp.x, ip.z - cp.z);
-            }
+            updated = updated || !ins.isUpdated;
+        }
+
+        if (updated || !this.camera.isUpdated) {
+            this.instances.transparent.sort((a: Instance, b: Instance) => {
+                return (b.distanceToCamera < a.distanceToCamera)? -1 : 1;
+            });
         }
 
         for (let i=0,ins;ins=this.instances.opaques[i];i++) {
             ins.render(this.renderer, this.camera);
         }
-
-        this.instances.transparent.sort((a: Instance, b: Instance) => {
-            return (b.distanceToCamera < a.distanceToCamera)? -1 : 1;
-        });
 
         for (let i=0,ins;ins=this.instances.transparent[i];i++) {
             ins.render(this.renderer, this.camera);
