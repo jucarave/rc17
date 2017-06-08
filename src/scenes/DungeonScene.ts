@@ -126,6 +126,12 @@ class DungeonScene extends Scene {
         return (map[z] && map[z][x] && map[z][x].solid);
     }
 
+    public isVisible(x: number, z: number): boolean {
+        let lm = this.dungeon.lightMap;
+
+        return lm.getVisible(x, z) >= 2;
+    }
+
     public getPath(xstart: number, zstart: number, xend: number, zend: number): Array<number> {
         let map = this.dungeon.map;
         if (map[zstart] == undefined || map[zend] == undefined || map[zend][xend] == undefined) { return []; }

@@ -84,6 +84,10 @@ class LightMap {
         if (strength < this.lightMap[z][x] - 2) { return; }
         this.lightMap[z][x] = strength + 2;
     }
+
+    public getVisible(x: number, z: number): number {
+        return this.lightMap[z][x];
+    }
 }
 
 export default LightMap;

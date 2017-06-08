@@ -9,6 +9,7 @@ import { Vector3, vec3 } from './math/Vector3';
 import { squaredDist } from './math/Utils';
 import Component from './components/Component';
 import Scene from './scenes/Scene';
+import DungeonScene from './scenes/DungeonScene';
 
 class Instance {
     private scene               : Scene;
@@ -22,6 +23,7 @@ class Instance {
 
     public isStatic             : boolean;
     public isBillboard          : boolean;
+    public isLit                : boolean;
     public distanceToCamera     : number;
 
     constructor(scene: Scene, position?: Vector3, geometry?: Geometry, material?: Material) {
@@ -35,6 +37,7 @@ class Instance {
         this.needsUpdate = true;
         this.isStatic = false;
         this.isBillboard = false;
+        this.isLit = false;
     }
 
     public setPosition(x: number, y: number, z: number, relative: boolean = false): Instance {
@@ -155,6 +158,7 @@ class Instance {
     public render(renderer: Renderer, camera: Camera): void {
         if (!this.geometry || !this.material) { return; }
         if (!this.material.isReady) { return; }
+        if (!this.isLit && !(<DungeonScene>this.scene).isVisible(this.position.x << 0, this.position.z << 0)) { return; }
 
         renderer.setShader(this.material.shaderName);
         

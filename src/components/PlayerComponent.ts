@@ -48,22 +48,24 @@ class PlayerComponent extends Component {
         return 0
     }
 
+    private updateFOV(): void {
+        let scene: DungeonScene = <DungeonScene>this.instance.getScene();
+            scene.castLight(this.instance, PlayerComponent.losDistance);
+    }
+
     private updateMovement(): void {
         let zTo = this.isKeyPressed('DOWN') - this.isKeyPressed('UP'), 
             xTo = this.isKeyPressed('RIGHT') - this.isKeyPressed('LEFT');
 
         if (xTo != 0 || zTo != 0) {
-            this.mvComponent.moveTo(xTo, zTo);
+            this.mvComponent.moveTo(xTo, zTo, () => this.updateFOV());
         }
 
         if (this.path != null && !this.mvComponent.isMoving) {
             let coords = this.path.splice(0, 2),
                 pos = this.instance.getPosition();
 
-            this.mvComponent.moveTo(coords[0] - pos.x, coords[1] - pos.z, () => {
-                let scene: DungeonScene = <DungeonScene>this.instance.getScene();
-                scene.castLight(this.instance, PlayerComponent.losDistance);
-            });
+            this.mvComponent.moveTo(coords[0] - pos.x, coords[1] - pos.z, () => this.updateFOV());
 
             if (this.path.length == 0) { this.path = null; }
         }
