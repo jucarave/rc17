@@ -53,12 +53,18 @@ class PlayerComponent extends Component {
             scene.castLight(this.instance, PlayerComponent.losDistance);
     }
 
+    private moveTo(x: number, z: number): void {
+        let scene: DungeonScene = <DungeonScene>this.instance.getScene();
+        this.path = scene.getPath(this.instance.getPosition().x, this.instance.getPosition().z, x, z);
+        if (this.path.length == 0){ this.path = null; }
+    }
+
     private updateMovement(): void {
         let zTo = this.isKeyPressed('DOWN') - this.isKeyPressed('UP'), 
             xTo = this.isKeyPressed('RIGHT') - this.isKeyPressed('LEFT');
 
         if (xTo != 0 || zTo != 0) {
-            this.mvComponent.moveTo(xTo, zTo, () => this.updateFOV());
+            this.moveTo(this.instance.getPosition().x + xTo, this.instance.getPosition().z + zTo);
         }
 
         if (this.path != null && !this.mvComponent.isMoving) {
@@ -103,10 +109,7 @@ class PlayerComponent extends Component {
                         px = Math.floor((start.x + (end.x - start.x) * f1) / 6.4),
                         pz = Math.floor((start.z + (end.z - start.z) * f1) / 6.4);
 
-                    let scene: DungeonScene = <DungeonScene>this.instance.getScene();
-                    
-                    this.path = scene.getPath(this.instance.getPosition().x, this.instance.getPosition().z, px, pz);
-                    if (this.path.length == 0){ this.path = null; }
+                    this.moveTo(px, pz);
                 }
 
                 this.dragControl.set(0, 0, 0);

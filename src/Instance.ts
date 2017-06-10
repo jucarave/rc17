@@ -20,6 +20,7 @@ class Instance {
     private transform           : Matrix4;
     private components          : Array<Component>;
     private needsUpdate         : boolean;
+    private solidPosition       : Vector3;
 
     public isStatic             : boolean;
     public isBillboard          : boolean;
@@ -38,6 +39,7 @@ class Instance {
         this.isStatic = false;
         this.isBillboard = false;
         this.isLit = false;
+        this.solidPosition = null;
     }
 
     public setPosition(x: number, y: number, z: number, relative: boolean = false): Instance {
@@ -58,6 +60,17 @@ class Instance {
         this.needsUpdate = true;
 
         return this;
+    }
+
+    public setSolid(): void {
+        (<DungeonScene>this.scene).setSolid(this.position.x, this.position.z, 0);
+
+        if (this.solidPosition != null) {
+            (<DungeonScene>this.scene).setSolid(this.solidPosition.x, this.solidPosition.z, 1);
+            this.solidPosition.set(this.position.x, this.position.y, this.position.z);
+        } else {
+            this.solidPosition = this.position.clone();
+        }
     }
 
     public getMaterial(): Material {

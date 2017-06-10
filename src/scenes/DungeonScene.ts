@@ -126,6 +126,12 @@ class DungeonScene extends Scene {
         return (map[z] && map[z][x] && map[z][x].solid);
     }
 
+    public setSolid(x: number, z: number, weight: number): void {
+        let graph = this.dungeon.graph;
+
+        graph.grid[x][z].weight = weight; 
+    }
+
     public isVisible(x: number, z: number): boolean {
         let lm = this.dungeon.lightMap;
 
