@@ -8,6 +8,7 @@ import MovementComponent from './MovementComponent';
 type KeysType = 'LEFT'|'UP'|'RIGHT'|'DOWN';
 
 class PlayerComponent extends Component {
+    private scene               : DungeonScene;
     private dragControl         : Vector3;
     private mvComponent         : MovementComponent;
     private path                : Array<number>;
@@ -24,6 +25,7 @@ class PlayerComponent extends Component {
     constructor(instance: Instance) {
         super(instance, PlayerComponent.className);
 
+        this.scene = null;
         this.mvComponent = null;
         this.dragControl = vec3(0.0);
         this.path = null;
@@ -49,13 +51,11 @@ class PlayerComponent extends Component {
     }
 
     private updateFOV(): void {
-        let scene: DungeonScene = <DungeonScene>this.instance.getScene();
-            scene.castLight(this.instance, PlayerComponent.losDistance);
+        this.scene.castLight(this.instance, PlayerComponent.losDistance);
     }
 
     private moveTo(x: number, z: number): void {
-        let scene: DungeonScene = <DungeonScene>this.instance.getScene();
-        this.path = scene.getPath(this.instance.getPosition().x, this.instance.getPosition().z, x, z);
+        this.path = this.scene.getPath(this.instance.getPosition().x, this.instance.getPosition().z, x, z);
         if (this.path.length == 0){ this.path = null; }
     }
 
@@ -81,7 +81,9 @@ class PlayerComponent extends Component {
         this.mvComponent = this.instance.getComponent<MovementComponent>(MovementComponent.className);
         if (!this.mvComponent) { throw new Error("Player component requires Movement component to be attached"); }
 
-        let camera = this.instance.getScene().getCamera();
+        this.scene = <DungeonScene>this.instance.getScene();
+
+        let camera = this.scene.getCamera();
         this.mvComponent.setCamera(camera);
 
         Input.onKeyboard((keyCode: number, type: number) => {

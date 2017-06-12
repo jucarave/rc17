@@ -12,6 +12,7 @@
     "src/Data.ts",
     "src/Instance.ts",
 
+    "src/components/AIRandomComponent.ts",
     "src/components/Component.ts",
     "src/components/MovementComponent.ts",
     "src/components/PlayerComponent.ts",
