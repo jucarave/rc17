@@ -21,6 +21,7 @@ class DungeonScene extends Scene {
     private instances           : InstancesMap;
     private dungeon             : Dungeon;
     private player              : Instance;
+    private searchTurn          : boolean;
     
     constructor(renderer: Renderer) {
         super(renderer);
@@ -49,6 +50,8 @@ class DungeonScene extends Scene {
         this.initScene();
 
         this.castLight(player, PlayerComponent.losDistance);
+
+        this.searchTurn = true;
     }
 
     private createCamera(): void {
@@ -171,10 +174,19 @@ class DungeonScene extends Scene {
         this.dungeon.lightMap.update();
     }
 
+    public passTurn(): void {
+        this.searchTurn = true;
+    }
+
     public render(): void {
         let updated = false;
 
         for (let i=0,ins;ins=this.instances.list[i];i++) {
+            if (this.searchTurn && !ins.isStatic) {
+                ins.startTurn();
+                this.searchTurn = false;
+            }
+
             ins.update(this.camera);
 
             updated = updated || !ins.isUpdated;

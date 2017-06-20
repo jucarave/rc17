@@ -71,7 +71,10 @@ class PlayerComponent extends Component {
             let coords = this.path.splice(0, 2),
                 pos = this.instance.getPosition();
 
-            this.mvComponent.moveTo(coords[0] - pos.x, coords[1] - pos.z, () => this.updateFOV());
+            this.mvComponent.moveTo(coords[0] - pos.x, coords[1] - pos.z, () => {
+                this.updateFOV();
+                this.instance.endTurn();
+            });
 
             if (this.path.length == 0) { this.path = null; }
         }
@@ -129,6 +132,8 @@ class PlayerComponent extends Component {
     }
 
     public update(): void {
+        if (!this.instance.hasTurn()) { return; }
+        
         this.updateMovement();
     }
 }

@@ -21,6 +21,7 @@ class Instance {
     private components          : Array<Component>;
     private needsUpdate         : boolean;
     private solidPosition       : Vector3;
+    private onTurn              : boolean;
 
     public isStatic             : boolean;
     public isBillboard          : boolean;
@@ -40,6 +41,7 @@ class Instance {
         this.isBillboard = false;
         this.isLit = false;
         this.solidPosition = null;
+        this.onTurn = false;
     }
 
     public setPosition(x: number, y: number, z: number, relative: boolean = false): Instance {
@@ -63,14 +65,14 @@ class Instance {
     }
 
     public setSolid(): void {
-        (<DungeonScene>this.scene).setSolid(this.position.x, this.position.z, 0);
-
         if (this.solidPosition != null) {
             (<DungeonScene>this.scene).setSolid(this.solidPosition.x, this.solidPosition.z, 1);
             this.solidPosition.set(this.position.x, this.position.y, this.position.z);
         } else {
             this.solidPosition = this.position.clone();
         }
+
+        (<DungeonScene>this.scene).setSolid(this.position.x, this.position.z, 0);
     }
 
     public getMaterial(): Material {
@@ -143,6 +145,22 @@ class Instance {
         return this.material.shaderName;
     }
 
+    public startTurn(): void {
+        this.onTurn = true;
+    }
+
+    public endTurn(): void {
+        this.setSolid();
+
+        this.onTurn = false;
+
+        (<DungeonScene>this.scene).passTurn();
+    }
+
+    public hasTurn(): boolean {
+        return this.onTurn;
+    }
+
     public awake(): void {
         for (let i=0,component;component=this.components[i];i++) {
             component.start();
@@ -150,8 +168,10 @@ class Instance {
     }
 
     public update(camera: Camera): void {
-        for (let i=0,component;component=this.components[i];i++) {
-            component.update();
+        if (this.onTurn) {
+            for (let i=0,component;component=this.components[i];i++) {
+                component.update();
+            }
         }
 
         if (this.needsUpdate || !camera.isUpdated) {

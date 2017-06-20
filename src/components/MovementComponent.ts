@@ -46,39 +46,6 @@ class MovementComponent extends Component {
         camera.setAngle(this.cameraAngle.x, this.cameraAngle.y, -this.cameraAngle.z);
     }
 
-    public start(): void {
-        this.moving = false;
-    }
-
-    public update(): void {
-        if (this.moving) {
-            let hor = this.moveVector.z - this.moveVector.x,
-                ver = this.moveVector.w - this.moveVector.y;
-
-            let x = this.speed * ((hor > 0)? 1 : (hor < 0)? -1 : 0),
-                z = this.speed * ((ver > 0)? 1 : (ver < 0)? -1 : 0);
-
-            this.instance.setPosition(x, 0.0, z, true);
-
-            this.moveVector.add(x, z, 0, 0);
-
-            if (Math.abs(hor) < this.speed && Math.abs(ver) < this.speed) {
-                this.instance.setPosition(this.moveVector.z, 0.0, this.moveVector.w, false);
-                this.moving = false;
-                this.moveVector.set(0.0, 0.0, 0.0, 0.0);
-
-                if (this.callback) {
-                    this.callback();
-                    this.callback = null;
-                }
-            }
-
-            if (this.camera != null) {
-                this.updateCamera();
-            }
-        }
-    }
-
     public moveTo(xTo: number, zTo: number, callback?: Function): void {
         if (this.moving) { return; }
         
@@ -117,6 +84,40 @@ class MovementComponent extends Component {
 
     public get isMoving(): boolean {
         return this.moving;
+    }
+
+    public start(): void {
+        this.moving = false;
+    }
+
+    public update(): void {
+        if (this.moving) {
+            let hor = this.moveVector.z - this.moveVector.x,
+                ver = this.moveVector.w - this.moveVector.y;
+
+            let x = this.speed * ((hor > 0)? 1 : (hor < 0)? -1 : 0),
+                z = this.speed * ((ver > 0)? 1 : (ver < 0)? -1 : 0);
+
+            this.instance.setPosition(x, 0.0, z, true);
+
+            this.moveVector.add(x, z, 0, 0);
+
+            if (Math.abs(hor) < this.speed && Math.abs(ver) < this.speed) {
+                this.instance.setPosition(this.moveVector.z, 0.0, this.moveVector.w, false);
+                
+                if (this.callback) {
+                    this.callback();
+                    this.callback = null;
+                }
+
+                this.moving = false;
+                this.moveVector.set(0.0, 0.0, 0.0, 0.0);
+            }
+
+            if (this.camera != null) {
+                this.updateCamera();
+            }
+        }
     }
 }
 

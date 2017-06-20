@@ -5,6 +5,7 @@ import { Vector3 } from '../math/Vector3';
 import { DegToRad } from '../math/Utils';
 import MovementComponent from '../components/MovementComponent';
 import PlayerComponent from '../components/PlayerComponent';
+import AIRandomComponent from '../components/AIRandomComponent';
 import Instance from '../Instance';
 import { Data, SPRITES, ANIMATIONS } from '../Data';
 import Scene from '../scenes/Scene';
@@ -24,6 +25,8 @@ abstract class CharacterFactory {
 
         instance.setRotation(0, DegToRad(-45), 0);
 
+        instance.setSolid();
+
         instance.isBillboard = true;
 
         return instance;
@@ -39,6 +42,7 @@ abstract class CharacterFactory {
         let instance = new Instance(scene, position, geometry, material);
 
         instance.addComponent(new MovementComponent(instance));
+        instance.addComponent(new AIRandomComponent(instance));
 
         instance.setRotation(0, DegToRad(-45), 0);
 
