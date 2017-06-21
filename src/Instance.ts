@@ -150,8 +150,6 @@ class Instance {
     }
 
     public endTurn(): void {
-        this.setSolid();
-
         this.onTurn = false;
 
         (<DungeonScene>this.scene).passTurn();

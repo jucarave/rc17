@@ -85,7 +85,7 @@ class DungeonScene extends Scene {
             this.dungeon.lightMap.lightTile(x1, z1, 10-d/distance*10);
 
             d += getDistance(x1-x0,z1-z0);
-            if (d >= distance || this.isSolid(x1, z1)) {
+            if (d >= distance || this.isTileSolid(x1, z1)) {
                 return;
             }
 
@@ -123,10 +123,17 @@ class DungeonScene extends Scene {
         }
     }
 
-    public isSolid(x: number, z: number): boolean {
+    public isTileSolid(x: number, z: number): boolean {
         let map = this.dungeon.map;
 
         return (map[z] && map[z][x] && map[z][x].solid);
+    }
+
+    public isSolid(x: number, z: number): boolean {
+        let map = this.dungeon.map,
+            graph = this.dungeon.graph;
+
+        return (map[z] && map[z][x] && graph.grid[x][z].weight == 0);
     }
 
     public setSolid(x: number, z: number, weight: number): void {

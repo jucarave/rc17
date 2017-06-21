@@ -93,16 +93,19 @@ class MovementComponent extends Component {
     public update(): void {
         if (this.moving) {
             let hor = this.moveVector.z - this.moveVector.x,
-                ver = this.moveVector.w - this.moveVector.y;
+                ver = this.moveVector.w - this.moveVector.y,
+                isVisible = (<DungeonScene>this.instance.getScene()).isVisible(this.moveVector.z, this.moveVector.w);
 
-            let x = this.speed * ((hor > 0)? 1 : (hor < 0)? -1 : 0),
-                z = this.speed * ((ver > 0)? 1 : (ver < 0)? -1 : 0);
+            if (isVisible) {
+                let x = this.speed * ((hor > 0)? 1 : (hor < 0)? -1 : 0),
+                    z = this.speed * ((ver > 0)? 1 : (ver < 0)? -1 : 0);
 
-            this.instance.setPosition(x, 0.0, z, true);
+                this.instance.setPosition(x, 0.0, z, true);
 
-            this.moveVector.add(x, z, 0, 0);
+                this.moveVector.add(x, z, 0, 0);
+            }
 
-            if (Math.abs(hor) < this.speed && Math.abs(ver) < this.speed) {
+            if ((Math.abs(hor) < this.speed && Math.abs(ver) < this.speed) || !isVisible) {
                 this.instance.setPosition(this.moveVector.z, 0.0, this.moveVector.w, false);
                 
                 if (this.callback) {

@@ -25,8 +25,6 @@ abstract class CharacterFactory {
 
         instance.setRotation(0, DegToRad(-45), 0);
 
-        instance.setSolid();
-
         instance.isBillboard = true;
 
         return instance;
@@ -45,8 +43,6 @@ abstract class CharacterFactory {
         instance.addComponent(new AIRandomComponent(instance));
 
         instance.setRotation(0, DegToRad(-45), 0);
-
-        instance.setSolid();
 
         instance.isBillboard = true;
 
