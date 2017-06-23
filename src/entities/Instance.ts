@@ -1,24 +1,20 @@
-import Geometry from './engine/geometries/Geometry';
-import Renderer from './engine/Renderer';
-import Camera from './engine/Camera';
-import { GRID_SIZE } from './engine/Constants';
-import Material from './engine/materials/Material';
-import Shader from './engine/shaders/Shader';
-import Matrix4 from './math/Matrix4';
-import { Vector3, vec3 } from './math/Vector3';
-import { squaredDist } from './math/Utils';
-import Component from './components/Component';
-import Scene from './scenes/Scene';
-import DungeonScene from './scenes/DungeonScene';
+import Geometry from '../engine/geometries/Geometry';
+import Renderer from '../engine/Renderer';
+import Camera from '../engine/Camera';
+import { GRID_SIZE } from '../engine/Constants';
+import Material from '../engine/materials/Material';
+import Shader from '../engine/shaders/Shader';
+import Matrix4 from '../math/Matrix4';
+import { Vector3 } from '../math/Vector3';
+import { squaredDist } from '../math/Utils';
+import Scene from '../scenes/Scene';
+import DungeonScene from '../scenes/DungeonScene';
+import GameObject from './GameObject';
 
-class Instance {
-    private scene               : Scene;
+class Instance extends GameObject {
     private geometry            : Geometry;
     private material            : Material;
-    private position            : Vector3;
-    private rotation            : Vector3;
     private transform           : Matrix4;
-    private components          : Array<Component>;
     private needsUpdate         : boolean;
     private solidPosition       : Vector3;
     private onTurn              : boolean;
@@ -29,13 +25,11 @@ class Instance {
     public distanceToCamera     : number;
 
     constructor(scene: Scene, position?: Vector3, geometry?: Geometry, material?: Material) {
-        this.scene = scene;
+        super(scene, position);
+
         this.geometry = (geometry)? geometry : null;
         this.material = (material)? material : null;
-        this.position = (position)? position : vec3(0.0);
-        this.rotation = vec3(0.0);
         this.transform = Matrix4.createIdentity();
-        this.components = [];
         this.needsUpdate = true;
         this.isStatic = false;
         this.isBillboard = false;
@@ -45,11 +39,7 @@ class Instance {
     }
 
     public setPosition(x: number, y: number, z: number, relative: boolean = false): Instance {
-        if (relative) {
-            this.position.add(x, y, z);
-        } else {
-            this.position.set(x, y, z);
-        }
+        super.setPosition(x, y, z, relative);
 
         this.needsUpdate = true;
 
@@ -57,7 +47,7 @@ class Instance {
     }
 
     public setRotation(x: number, y: number, z: number): Instance {
-        this.rotation.set(x, y, z);
+        super.setRotation(x, y, z);
 
         this.needsUpdate = true;
 
@@ -115,30 +105,6 @@ class Instance {
         this.needsUpdate = false;
 
         return this.transform;
-    }
-
-    public addComponent(component: Component): Instance {
-        this.components.push(component);
-
-        return this;
-    }
-
-    public getComponent<T>(componentName: string): T {
-        for (let i=0,component;component=this.components[i];i++) {
-            if (component.name == componentName) {
-                return <T>(<any>component);
-            }
-        }
-
-        return null;
-    }
-
-    public getPosition(): Vector3 {
-        return this.position;
-    }
-
-    public getScene(): Scene {
-        return this.scene;
     }
 
     public getShaderName(): string {

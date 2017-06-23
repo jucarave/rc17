@@ -10,7 +10,6 @@
   "files": [
     "src/App.ts",
     "src/Data.ts",
-    "src/Instance.ts",
 
     "src/components/AIRandomComponent.ts",
     "src/components/Component.ts",
@@ -36,6 +35,9 @@
     "src/engine/shaders/DungeonShader.ts",
     "src/engine/shaders/ShaderStructure.ts",
     "src/engine/shaders/Shader.ts",
+    
+    "src/entities/GameObject.ts",
+    "src/entities/Instance.ts",
 
     "src/factories/CharacterFactory.ts",
     "src/factories/DungeonFactory.ts",

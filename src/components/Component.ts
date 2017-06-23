@@ -1,4 +1,4 @@
-import Instance from '../Instance';
+import Instance from '../entities/Instance';
 
 abstract class Component {
     protected instance            : Instance;

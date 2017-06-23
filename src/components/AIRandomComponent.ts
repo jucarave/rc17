@@ -1,4 +1,4 @@
-import Instance from '../Instance';
+import Instance from '../entities/Instance';
 import DungeonScene from '../scenes/DungeonScene';
 import Component from './Component';
 import MovementComponent from './MovementComponent';

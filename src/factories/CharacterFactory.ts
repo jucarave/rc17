@@ -6,7 +6,7 @@ import { DegToRad } from '../math/Utils';
 import MovementComponent from '../components/MovementComponent';
 import PlayerComponent from '../components/PlayerComponent';
 import AIRandomComponent from '../components/AIRandomComponent';
-import Instance from '../Instance';
+import Instance from '../entities/Instance';
 import { Data, SPRITES, ANIMATIONS } from '../Data';
 import Scene from '../scenes/Scene';
 

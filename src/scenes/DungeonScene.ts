@@ -8,7 +8,7 @@ import { DungeonFactory, Dungeon } from '../factories/DungeonFactory';
 import { getDistance/*, DegToRad*/ } from '../math/Utils';
 import { vec3 } from '../math/Vector3';
 import PlayerComponent from '../components/PlayerComponent';
-import Instance from '../Instance';
+import Instance from '../entities/Instance';
 import Scene from './Scene';
 
 interface InstancesMap {
@@ -37,7 +37,7 @@ class DungeonScene extends Scene {
 
     private createDungeonTest(): void {
         this.dungeon = DungeonFactory.createDungeon(this, this.renderer);
-        this.addInstance(this.dungeon.instance);
+        this.addGameObject(this.dungeon.instance);
 
         let player = CharacterFactory.createPlayer(this, this.renderer, vec3(3, 0, 3));
         this.player = player;
@@ -186,6 +186,8 @@ class DungeonScene extends Scene {
     }
 
     public render(): void {
+        super.render();
+        
         let updated = false;
 
         for (let i=0,ins;ins=this.instances.list[i];i++) {

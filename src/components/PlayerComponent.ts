@@ -1,5 +1,5 @@
 import Input from '../engine/Input';
-import Instance from '../Instance';
+import Instance from '../entities/Instance';
 import { Vector3, vec3 } from '../math/Vector3';
 import DungeonScene from '../scenes/DungeonScene';
 import Component from './Component';

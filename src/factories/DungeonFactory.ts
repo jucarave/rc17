@@ -4,7 +4,7 @@ import Geometry from '../engine/geometries/Geometry';
 import DungeonMaterial from '../engine/materials/DungeonMaterial';
 import Renderer from '../engine/Renderer';
 import LightMap from '../engine/LightMap';
-import Instance from '../Instance';
+import Instance from '../entities/Instance';
 import { Data, TILESETS, TILESETS_UVS } from '../Data';
 import { GRID_SIZE, WALL_SIZE } from '../engine/Constants';
 import Scene from '../scenes/Scene';

@@ -3,7 +3,7 @@ import { GRID_SIZE } from '../engine/Constants';
 import { Vector4, vec4 } from '../math/Vector4';
 import { Vector3, vec3 } from '../math/Vector3';
 import { DegToRad } from '../math/Utils';
-import Instance from '../Instance';
+import Instance from '../entities/Instance';
 import Component from './Component';
 import DungeonScene from '../scenes/DungeonScene';
 
