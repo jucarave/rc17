@@ -31,5 +31,31 @@
                 "floor" : [0, 0, 64, 64]
             }
         }
+    ],
+    "items": [
+        {
+            "ID": "0x0000",
+            "type": "CHARACTER",
+            "name": "Giant rat",
+            "sprite": "rat",
+            "level": 2,
+            "HP": 5,
+            "MP": 0,
+            "SP": 8,
+            "attack": 3,
+            "defense": 1,
+            "speed": 5,
+            "wisdom": 0,
+            "luck": 0,
+            "inventory": [
+                { "ID": "0x5555", "amount": 1, "chance": 1 }
+            ]
+        },
+        {
+            "ID": "0x5555",
+            "type": "ITEM",
+            "name": "Rat meat",
+            "description": "Restores 1 HP, if eaten raw it has a 10% of chance of poison the consumer."
+        }
     ]
 }

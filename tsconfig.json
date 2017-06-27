@@ -12,6 +12,7 @@
     "src/Data.ts",
 
     "src/components/AIRandomComponent.ts",
+    "src/components/CharacterComponent.ts",
     "src/components/Component.ts",
     "src/components/MovementComponent.ts",
     "src/components/PlayerComponent.ts",
@@ -38,6 +39,7 @@
     
     "src/entities/GameObject.ts",
     "src/entities/Instance.ts",
+    "src/entities/ItemDef.ts",
 
     "src/factories/CharacterFactory.ts",
     "src/factories/DungeonFactory.ts",
