@@ -6,9 +6,10 @@ import { CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT, CAMERA_ORTHO_ZFAR, CAMERA_ORTH
 import CharacterFactory from '../factories/CharacterFactory';
 import { DungeonFactory, Dungeon } from '../factories/DungeonFactory';
 import { getDistance/*, DegToRad*/ } from '../math/Utils';
-import { vec3 } from '../math/Vector3';
+import { Vector3, vec3 } from '../math/Vector3';
 import PlayerComponent from '../components/PlayerComponent';
 import Instance from '../entities/Instance';
+import { Data } from '../Data';
 import Scene from './Scene';
 
 interface InstancesMap {
@@ -43,7 +44,7 @@ class DungeonScene extends Scene {
         this.player = player;
         this.addInstance(player);
 
-        this.addInstance(CharacterFactory.createEnemy(this, this.renderer, vec3(7, 0, 4)));
+        this.spawn("0x0001", vec3(7, 0, 4));
 
         this.createCamera();
 
@@ -100,6 +101,11 @@ class DungeonScene extends Scene {
                 z1 += sz;
             }
         }
+    }
+
+    public spawn(itemCode: string, position: Vector3): void {
+        let item = Data.getItem(itemCode);
+        this.addInstance(CharacterFactory.createEnemy(this, this.renderer, position, item));
     }
 
     public addInstance(instance: Instance): void {

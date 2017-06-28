@@ -1,9 +1,11 @@
 import Instance from '../entities/Instance';
 import DungeonScene from '../scenes/DungeonScene';
 import Component from './Component';
+import CharacterComponent from './CharacterComponent';
 import MovementComponent from './MovementComponent';
 
 class AIRandomComponent extends Component {
+    private charaComponent              : CharacterComponent;
     private mvComponent                 : MovementComponent;
     private scene                       : DungeonScene;
     private path                        : Array<number>;
@@ -13,6 +15,7 @@ class AIRandomComponent extends Component {
     constructor(instance: Instance) {
         super(instance, AIRandomComponent.className);
 
+        this.charaComponent = null;
         this.mvComponent = null;
         this.scene = null;
     }
@@ -45,6 +48,9 @@ class AIRandomComponent extends Component {
     }
 
     public start(): void {
+        this.charaComponent = this.instance.getComponent<CharacterComponent>(CharacterComponent.className);
+        if (!this.charaComponent) { throw new Error("AI Random component requires Character component to be attached"); }
+
         this.mvComponent = this.instance.getComponent<MovementComponent>(MovementComponent.className);
         if (!this.mvComponent) { throw new Error("AI Random component requires Movement component to be attached"); }
 

@@ -1,9 +1,10 @@
 import Instance from '../entities/Instance';
 import ItemDef from '../entities/ItemDef';
 import Component from './Component';
+import { CharacterData } from '../Data';
 
 class CharacterComponent extends Component {
-    private ID                           : number;
+    private ID                           : string;
     private characterName                : string;
     private level                        : number;
     private experience                   : number;
@@ -23,25 +24,29 @@ class CharacterComponent extends Component {
 
     public static readonly className        : string = "characterComponent";
 
-    constructor(instance: Instance) {
+    constructor(instance: Instance, data: CharacterData) {
         super(instance, CharacterComponent.className);
 
-        this.ID = null;
-        this.characterName = null;
-        this.level = 0;
+        this.fillData(data);
+    }
+
+    private fillData(data: CharacterData): void {
+        this.ID = data.ID;
+        this.characterName = data.name;
+        this.level = data.level;
         this.experience = 0;
-        this.HP = 1;
-        this.mHP = 1;
-        this.MP = 1;
-        this.mMP = 1;
-        this.SP = 1;
-        this.mSP = 1;
-        this.attack = 1;
-        this.defense = 1;
-        this.speed = 1;
-        this.wisdom = 1;
-        this.luck = 1;
-        this.inventory = [];
+        this.HP = data.HP;
+        this.mHP = data.HP;
+        this.MP = data.MP;
+        this.mMP = data.MP;
+        this.SP = data.SP;
+        this.mSP = data.SP;
+        this.attack = data.attack;
+        this.defense = data.defense;
+        this.speed = data.speed;
+        this.wisdom = data.wisdom;
+        this.luck = data.luck;
+        this.inventory = []; // TODO: Parse data inventory
     }
 }
 

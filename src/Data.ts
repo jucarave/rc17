@@ -29,6 +29,10 @@ interface TilesetMap {
     [index: string] : TilesetObject;
 }
 
+interface ItemsMap {
+    [index: string]: CharacterData;
+}
+
 export let SPRITES = {
     CHARACTERS: "characters"
 };
@@ -46,9 +50,29 @@ export let TILESETS_UVS = {
     DUNGEON_FLOOR: "floor"
 };
 
+export type itemType = 'CHARACTER';
+
+export interface CharacterData {
+    ID: string,
+    type: itemType,
+    name: string,
+    sprite: string,
+    level: number,
+    HP: number,
+    MP: number,
+    SP: number,
+    attack: number,
+    defense: number,
+    speed: number,
+    wisdom: number,
+    luck: number
+}
+
 abstract class Data {
-    public static sprites      : SpritesMap;
-    public static tileset      : TilesetMap;
+    private static sprites      : SpritesMap;
+    private static tileset      : TilesetMap;
+    private static playerData   : CharacterData;
+    private static itemsData    : ItemsMap;
 
     private static parseAnimations(textureJSON: any, animations: AnimationMap): void {
         for (let animation in textureJSON.animations) {
@@ -109,6 +133,32 @@ abstract class Data {
         }
     }
 
+    private static parseItems(items: any): void {
+        Data.itemsData = {};
+
+        for (let i=0,item;item=items[i];i++) {
+            let data: CharacterData = {
+                ID: item.ID,
+                type: item.type,
+                name: item.name,
+                sprite: item.sprite,
+                level: item.level,
+                HP: item.HP,
+                MP: item.MP,
+                SP: item.SP,
+                attack: item.attack,
+                defense: item.defense,
+                speed: item.speed,
+                wisdom: item.wisdom,
+                luck: item.luck
+            };
+
+            Data.itemsData[data.ID] = data;
+        }
+
+        console.log(Data.itemsData);
+    }
+
     public static loadData(renderer: Renderer, callback: Function): void {
         Data.sprites = {};
         Data.tileset = {};
@@ -116,9 +166,48 @@ abstract class Data {
         loadJSON('data/data.json', (response: any) => {
             Data.parseTextures(response.sprites, renderer);
             Data.parseTileset(response.tileset, renderer);
+            Data.parseItems(response.items);
 
             callback();
         });
+    }
+
+    public static createPlayer(name: string): void {
+        Data.playerData = {
+            ID: "0x0000",
+            type: "CHARACTER",
+            sprite: 'hero',
+            name: name,
+            level: 1,
+            HP: 20,
+            MP: 20,
+            SP: 20,
+            attack: 5,
+            defense: 5,
+            speed: 5,
+            wisdom: 5,
+            luck: 5
+        };
+    }
+
+    public static getPlayerData(): CharacterData {
+        return Data.playerData;
+    }
+
+    public static getSprites(): SpritesMap {
+        return Data.sprites;
+    }
+
+    public static getTileset(): TilesetMap {
+        return Data.tileset;
+    }
+
+    public static getItems(): ItemsMap {
+        return Data.itemsData;
+    }
+
+    public static getItem(itemCode: string): CharacterData {
+        return Data.itemsData[itemCode];
     }
 }
 

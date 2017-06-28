@@ -20,6 +20,7 @@ class App {
     }
 
     private newGame(): void {
+        Data.createPlayer("Kram");
         this.scene = new DungeonScene(this.renderer);
 
         this.stats.showPanel(1);

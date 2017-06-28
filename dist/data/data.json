@@ -34,7 +34,7 @@
     ],
     "items": [
         {
-            "ID": "0x0000",
+            "ID": "0x0001",
             "type": "CHARACTER",
             "name": "Giant rat",
             "sprite": "rat",

@@ -129,7 +129,7 @@ abstract class DungeonFactory {
 
     public static createDungeon(scene: Scene, renderer: Renderer): Dungeon {
         let geometry: Geometry = new Geometry(),
-            tileset = Data.tileset[TILESETS.DUNGEON],
+            tileset = Data.getTileset()[TILESETS.DUNGEON],
             map = this.parseMap(this.generateMap()),
             graph = this.getSolidMap(map),
             lightMap = new LightMap(16, 16, renderer),

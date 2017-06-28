@@ -4,6 +4,7 @@ import { Vector3, vec3 } from '../math/Vector3';
 import DungeonScene from '../scenes/DungeonScene';
 import Component from './Component';
 import MovementComponent from './MovementComponent';
+import CharacterComponent from './CharacterComponent';
 
 type KeysType = 'LEFT'|'UP'|'RIGHT'|'DOWN';
 
@@ -11,6 +12,7 @@ class PlayerComponent extends Component {
     private scene               : DungeonScene;
     private dragControl         : Vector3;
     private mvComponent         : MovementComponent;
+    private charaComponent       : CharacterComponent;
     private path                : Array<number>;
     private controls = {
         UP          : 0,
@@ -27,6 +29,7 @@ class PlayerComponent extends Component {
 
         this.scene = null;
         this.mvComponent = null;
+        this.charaComponent = null;
         this.dragControl = vec3(0.0);
         this.path = null;
     }
@@ -80,55 +83,62 @@ class PlayerComponent extends Component {
         }
     }
 
+    private handleKeyboard(keyCode: number, type: number): void {
+        let control = this.keyCodeToControl(keyCode);
+        if (!control) { return; }
+
+        if (type == 1 && this.controls[control] == 2) {
+            return;
+        }
+
+        this.controls[control] = type;
+    }
+
+    private handleMouse(x: number, y: number, type: number): void {
+        if (this.path != null) { return; }
+
+        if (type == 0) {
+            if (this.dragControl.z != 2 && !this.mvComponent.isMoving) {
+                let camera = this.scene.getCamera(),
+                    dir = camera.forward,
+                    start = camera.screenToWorldCoords(x, y),
+                    end = start.clone().add(-dir.x * 100.0, -dir.y * 100.0, -dir.z * 100.0),
+
+                    len = Math.abs(end.y - start.y),
+                    f1 = start.y / len,
+                    px = Math.floor((start.x + (end.x - start.x) * f1) / 6.4),
+                    pz = Math.floor((start.z + (end.z - start.z) * f1) / 6.4);
+
+                this.moveTo(px, pz);
+            }
+
+            this.dragControl.set(0, 0, 0);
+        } else {
+            if (type == 1 && this.dragControl.z == 0) {
+                this.dragControl.set(x, y, 1);
+            } else if (type == 2 && this.dragControl.z > 0){
+                let dx = x - this.dragControl.x;
+                this.dragControl.set(x, y, 2);
+
+                this.mvComponent.rotateCamera(dx);
+            }
+        }
+    }
+
     public start(): void {
+        this.charaComponent = this.instance.getComponent<CharacterComponent>(CharacterComponent.className);
+        if (!this.charaComponent) { throw new Error("Player component requires Character component to be attached"); }
+
         this.mvComponent = this.instance.getComponent<MovementComponent>(MovementComponent.className);
         if (!this.mvComponent) { throw new Error("Player component requires Movement component to be attached"); }
 
         this.scene = <DungeonScene>this.instance.getScene();
 
-        let camera = this.scene.getCamera();
-        this.mvComponent.setCamera(camera);
+        this.mvComponent.setCamera(this.scene.getCamera());
 
-        Input.onKeyboard((keyCode: number, type: number) => {
-            let control = this.keyCodeToControl(keyCode);
-            if (!control) { return; }
+        Input.onKeyboard((keyCode: number, type: number) => this.handleKeyboard(keyCode, type));
 
-            if (type == 1 && this.controls[control] == 2) {
-                return;
-            }
-
-            this.controls[control] = type;
-        });
-
-        Input.onMouse((x: number, y: number, type: number) => {
-            if (this.path != null) { return; }
-
-            if (type == 0) {
-                if (this.dragControl.z != 2 && !this.mvComponent.isMoving) {
-                    let dir = camera.forward,
-                        start = camera.screenToWorldCoords(x, y),
-                        end = start.clone().add(-dir.x * 100.0, -dir.y * 100.0, -dir.z * 100.0);
-
-                    let len = Math.abs(end.y - start.y),
-                        f1 = start.y / len,
-                        px = Math.floor((start.x + (end.x - start.x) * f1) / 6.4),
-                        pz = Math.floor((start.z + (end.z - start.z) * f1) / 6.4);
-
-                    this.moveTo(px, pz);
-                }
-
-                this.dragControl.set(0, 0, 0);
-            } else {
-                if (type == 1 && this.dragControl.z == 0) {
-                    this.dragControl.set(x, y, 1);
-                } else if (type == 2 && this.dragControl.z > 0){
-                    let dx = x - this.dragControl.x;
-                    this.dragControl.set(x, y, 2);
-
-                    this.mvComponent.rotateCamera(dx);
-                }
-            }
-        });
+        Input.onMouse((x: number, y: number, type: number) => this.handleMouse(x, y, type));
     }
 
     public update(): void {
