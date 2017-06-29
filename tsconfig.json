@@ -41,7 +41,7 @@
     "src/entities/Instance.ts",
     "src/entities/ItemDef.ts",
 
-    "src/factories/CharacterFactory.ts",
+    "src/factories/EntityFactory.ts",
     "src/factories/DungeonFactory.ts",
     "src/factories/TileFactory.ts",
 

@@ -8,16 +8,16 @@ import MovementComponent from '../components/MovementComponent';
 import PlayerComponent from '../components/PlayerComponent';
 import AIRandomComponent from '../components/AIRandomComponent';
 import Instance from '../entities/Instance';
-import { Data, CharacterData, SPRITES, ANIMATIONS } from '../Data';
+import { Data, CharacterData, ItemData } from '../Data';
 import Scene from '../scenes/Scene';
 
-abstract class CharacterFactory {
+abstract class EntityFactory {
     public static createPlayer(scene: Scene, renderer: Renderer, position: Vector3): Instance {
         let geometry = new SpriteGeometry(renderer, 6.4, 6.4);
-        let sprite = Data.getSprites()[SPRITES.CHARACTERS];
+        let sprite = Data.getSprites()["characters"];
         
         let material = new SpriteMaterial(renderer, sprite.texture);
-        material.addAnimation(sprite.animations[ANIMATIONS.HERO_STAND]);
+        material.addAnimation(sprite.animations["hero_stand"]);
 
         let instance = new Instance(scene, position, geometry, material);
 
@@ -41,7 +41,7 @@ abstract class CharacterFactory {
 
         if (!animation) {
             animation = sprite.animations["noSprite"];
-            console.info("No sprite found for: [" + data.sprite + "]");
+            console.info("No sprite found for enemy: [" + data.sprite + "]");
         }
         
         material.addAnimation(animation);
@@ -58,6 +58,28 @@ abstract class CharacterFactory {
 
         return instance;
     }
+
+    public static createItem(scene: Scene, renderer: Renderer, position: Vector3, data: ItemData): Instance {
+        let spriteInfo = data.sprite.split("."),
+            geometry = new SpriteGeometry(renderer, 6.4, 6.4),
+            sprite = Data.getSprites()[spriteInfo[0]],
+            material = new SpriteMaterial(renderer, sprite.texture),
+            animation = sprite.animations[spriteInfo[1]];
+
+        if (!animation) {
+            animation = sprite.animations["noSprite"];
+            console.info("No sprite found for item: [" + data.sprite + "]");
+        }
+
+        material.addAnimation(animation);
+
+        let instance = new Instance(scene, position, geometry, material);
+
+        instance.isBillboard = true;
+        instance.isStatic = true;
+
+        return instance;
+    }
 }
 
-export default CharacterFactory;
+export default EntityFactory;

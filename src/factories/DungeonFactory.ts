@@ -162,6 +162,7 @@ abstract class DungeonFactory {
         let instance: Instance = new Instance(scene, null, geometry, material);
         instance.isStatic = true;
         instance.isLit = true;
+        instance.isGridPosition = false;
 
         return {
             map, 

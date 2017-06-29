@@ -22,6 +22,7 @@ class Instance extends GameObject {
     public isStatic             : boolean;
     public isBillboard          : boolean;
     public isLit                : boolean;
+    public isGridPosition       : boolean;
     public distanceToCamera     : number;
 
     constructor(scene: Scene, position?: Vector3, geometry?: Geometry, material?: Material) {
@@ -33,6 +34,7 @@ class Instance extends GameObject {
         this.needsUpdate = true;
         this.isStatic = false;
         this.isBillboard = false;
+        this.isGridPosition = true;
         this.isLit = false;
         this.solidPosition = null;
         this.onTurn = false;
@@ -88,7 +90,7 @@ class Instance extends GameObject {
         Matrix4.multiply(this.transform, Matrix4.createYRotation(this.rotation.y));
 
         let x: number, y: number, z: number;
-        if (this.isStatic) {
+        if (!this.isGridPosition) {
             x = this.position.x;
             y = this.position.y;
             z = this.position.z;

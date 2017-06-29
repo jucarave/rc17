@@ -29,15 +29,6 @@ interface TilesetMap {
     [index: string] : TilesetObject;
 }
 
-export let SPRITES = {
-    CHARACTERS: "characters"
-};
-
-export let ANIMATIONS = {
-    HERO_STAND: "hero_stand",
-    RAT_STAND: "rat_stand"
-};
-
 export let TILESETS = {
     DUNGEON: "dungeon"
 };
@@ -51,8 +42,8 @@ export type ItemType = 'CHARACTER' | 'ITEM';
 export interface CharacterData {
     ID: string,
     type: ItemType,
-    name: string,
     sprite: string,
+    name: string,
     level: number,
     HP: number,
     MP: number,
@@ -67,6 +58,7 @@ export interface CharacterData {
 export interface ItemData {
     ID: string,
     type: ItemType,
+    sprite: string,
     name: string,
     description: string
 }
@@ -158,8 +150,8 @@ abstract class Data {
                 data = {
                     ID: item.ID,
                     type: item.type,
-                    name: item.name,
                     sprite: item.sprite,
+                    name: item.name,
                     level: item.level,
                     HP: item.HP,
                     MP: item.MP,
@@ -174,6 +166,7 @@ abstract class Data {
                 data = {
                     ID: item.ID,
                     type: item.type,
+                    sprite: item.sprite,
                     name: item.name,
                     description: item.description
                 };

@@ -3,13 +3,13 @@ declare let astar: any;
 import Renderer from '../engine/Renderer';
 import Camera from '../engine/Camera';
 import { CAMERA_ORTHO_WIDTH, CAMERA_ORTHO_HEIGHT, CAMERA_ORTHO_ZFAR, CAMERA_ORTHO_ZNEAR} from '../engine/Constants';
-import CharacterFactory from '../factories/CharacterFactory';
+import EntityFactory from '../factories/EntityFactory';
 import { DungeonFactory, Dungeon } from '../factories/DungeonFactory';
 import { getDistance/*, DegToRad*/ } from '../math/Utils';
 import { Vector3, vec3 } from '../math/Vector3';
 import PlayerComponent from '../components/PlayerComponent';
 import Instance from '../entities/Instance';
-import { Data, CharacterData } from '../Data';
+import { Data, CharacterData, ItemData } from '../Data';
 import Scene from './Scene';
 
 interface InstancesMap {
@@ -40,11 +40,12 @@ class DungeonScene extends Scene {
         this.dungeon = DungeonFactory.createDungeon(this, this.renderer);
         this.addGameObject(this.dungeon.instance);
 
-        let player = CharacterFactory.createPlayer(this, this.renderer, vec3(3, 0, 3));
+        let player = EntityFactory.createPlayer(this, this.renderer, vec3(3, 0, 3));
         this.player = player;
         this.addInstance(player);
 
         this.spawn("0x0001", vec3(7, 0, 4));
+        this.spawn("0x5555", vec3(6, 0, 1));
 
         this.createCamera();
 
@@ -104,11 +105,16 @@ class DungeonScene extends Scene {
     }
 
     public spawn(itemCode: string, position: Vector3): void {
-        let item = Data.getItem(itemCode);
+        let item = Data.getItem(itemCode),
+            instance: Instance;
 
         if (item.type == 'CHARACTER') {
-            this.addInstance(CharacterFactory.createEnemy(this, this.renderer, position, <CharacterData>item));
+            instance = EntityFactory.createEnemy(this, this.renderer, position, <CharacterData>item);
+        } else if (item.type == 'ITEM') {
+            instance = EntityFactory.createItem(this, this.renderer, position, <ItemData>item);
         }
+
+        this.addInstance(instance);
     }
 
     public addInstance(instance: Instance): void {
