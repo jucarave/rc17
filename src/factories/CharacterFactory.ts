@@ -33,11 +33,18 @@ abstract class CharacterFactory {
     }
 
     public static createEnemy(scene: Scene, renderer: Renderer, position: Vector3, data: CharacterData): Instance {
-        let geometry = new SpriteGeometry(renderer, 6.4, 6.4);
-        let sprite = Data.getSprites()[SPRITES.CHARACTERS];
+        let spriteInfo = data.sprite.split("."),
+            geometry = new SpriteGeometry(renderer, 6.4, 6.4),
+            sprite = Data.getSprites()[spriteInfo[0]],
+            material = new SpriteMaterial(renderer, sprite.texture),
+            animation = sprite.animations[spriteInfo[1] + "_stand"];
+
+        if (!animation) {
+            animation = sprite.animations["noSprite"];
+            console.info("No sprite found for: [" + data.sprite + "]");
+        }
         
-        let material = new SpriteMaterial(renderer, sprite.texture);
-        material.addAnimation(sprite.animations[ANIMATIONS.RAT_STAND]);
+        material.addAnimation(animation);
 
         let instance = new Instance(scene, position, geometry, material);
 

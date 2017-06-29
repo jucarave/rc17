@@ -29,10 +29,6 @@ interface TilesetMap {
     [index: string] : TilesetObject;
 }
 
-interface ItemsMap {
-    [index: string]: CharacterData;
-}
-
 export let SPRITES = {
     CHARACTERS: "characters"
 };
@@ -50,11 +46,11 @@ export let TILESETS_UVS = {
     DUNGEON_FLOOR: "floor"
 };
 
-export type itemType = 'CHARACTER';
+export type ItemType = 'CHARACTER' | 'ITEM';
 
 export interface CharacterData {
     ID: string,
-    type: itemType,
+    type: ItemType,
     name: string,
     sprite: string,
     level: number,
@@ -68,11 +64,30 @@ export interface CharacterData {
     luck: number
 }
 
+export interface ItemData {
+    ID: string,
+    type: ItemType,
+    name: string,
+    description: string
+}
+
+export type ObjectsType = CharacterData | ItemData;
+
+export interface ObjectsData {
+    ID: string,
+    type: string,
+    data: ObjectsType
+}
+
+interface ObjectsMap {
+    [index: string]: ObjectsData;
+}
+
 abstract class Data {
     private static sprites      : SpritesMap;
     private static tileset      : TilesetMap;
     private static playerData   : CharacterData;
-    private static itemsData    : ItemsMap;
+    private static itemsData    : ObjectsMap;
 
     private static parseAnimations(textureJSON: any, animations: AnimationMap): void {
         for (let animation in textureJSON.animations) {
@@ -137,26 +152,39 @@ abstract class Data {
         Data.itemsData = {};
 
         for (let i=0,item;item=items[i];i++) {
-            let data: CharacterData = {
+            let data: ObjectsType;
+
+            if (item.type == 'CHARACTER') {
+                data = {
+                    ID: item.ID,
+                    type: item.type,
+                    name: item.name,
+                    sprite: item.sprite,
+                    level: item.level,
+                    HP: item.HP,
+                    MP: item.MP,
+                    SP: item.SP,
+                    attack: item.attack,
+                    defense: item.defense,
+                    speed: item.speed,
+                    wisdom: item.wisdom,
+                    luck: item.luck
+                };
+            } else if (item.type == 'ITEM') {
+                data = {
+                    ID: item.ID,
+                    type: item.type,
+                    name: item.name,
+                    description: item.description
+                };
+            }
+
+            Data.itemsData[data.ID] = {
                 ID: item.ID,
                 type: item.type,
-                name: item.name,
-                sprite: item.sprite,
-                level: item.level,
-                HP: item.HP,
-                MP: item.MP,
-                SP: item.SP,
-                attack: item.attack,
-                defense: item.defense,
-                speed: item.speed,
-                wisdom: item.wisdom,
-                luck: item.luck
+                data: data
             };
-
-            Data.itemsData[data.ID] = data;
         }
-
-        console.log(Data.itemsData);
     }
 
     public static loadData(renderer: Renderer, callback: Function): void {
@@ -202,12 +230,12 @@ abstract class Data {
         return Data.tileset;
     }
 
-    public static getItems(): ItemsMap {
+    public static getItems(): ObjectsMap {
         return Data.itemsData;
     }
 
-    public static getItem(itemCode: string): CharacterData {
-        return Data.itemsData[itemCode];
+    public static getItem(itemCode: string): ObjectsType {
+        return Data.itemsData[itemCode].data;
     }
 }
 
