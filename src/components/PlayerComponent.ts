@@ -18,7 +18,11 @@ class PlayerComponent extends Component {
         UP          : 0,
         DOWN        : 0,
         LEFT        : 0,
-        RIGHT       : 0
+        RIGHT       : 0,
+        
+        LMB         : -1,
+        MX          : 0,
+        MY          : 0
     };
 
     public static readonly className     : string = "playerComponent";
@@ -83,6 +87,38 @@ class PlayerComponent extends Component {
         }
     }
 
+    private updateMouseInput(): void {
+        if (this.path != null) { return; }
+
+        if (this.controls.LMB == 0) {
+            if (this.dragControl.z != 2 && !this.mvComponent.isMoving) {
+                let camera = this.scene.getCamera(),
+                    dir = camera.forward,
+                    start = camera.screenToWorldCoords(this.controls.MX, this.controls.MY),
+                    end = start.clone().add(-dir.x * 100.0, -dir.y * 100.0, -dir.z * 100.0),
+
+                    len = Math.abs(end.y - start.y),
+                    f1 = start.y / len,
+                    px = Math.floor((start.x + (end.x - start.x) * f1) / 6.4),
+                    pz = Math.floor((start.z + (end.z - start.z) * f1) / 6.4);
+
+                this.moveTo(px, pz);
+            }
+
+            this.dragControl.set(0, 0, 0);
+            this.controls.LMB = -1;
+        } else {
+            if (this.controls.LMB == 1 && this.dragControl.z == 0) {
+                this.dragControl.set(this.controls.MX, this.controls.MY, 1);
+            } else if (this.controls.LMB == 2 && this.dragControl.z > 0){
+                let dx = this.controls.MX - this.dragControl.x;
+                this.dragControl.set(this.controls.MX, this.controls.MY, 2);
+
+                this.mvComponent.rotateCamera(dx);
+            }
+        }
+    }
+
     private handleKeyboard(keyCode: number, type: number): void {
         let control = this.keyCodeToControl(keyCode);
         if (!control) { return; }
@@ -95,34 +131,13 @@ class PlayerComponent extends Component {
     }
 
     private handleMouse(x: number, y: number, type: number): void {
-        if (this.path != null) { return; }
+        if (type == 2 && this.controls.LMB <= 0) { return; }
 
-        if (type == 0) {
-            if (this.dragControl.z != 2 && !this.mvComponent.isMoving) {
-                let camera = this.scene.getCamera(),
-                    dir = camera.forward,
-                    start = camera.screenToWorldCoords(x, y),
-                    end = start.clone().add(-dir.x * 100.0, -dir.y * 100.0, -dir.z * 100.0),
+        this.controls.MX = x;
+        this.controls.MY = y;
+        this.controls.LMB = type;
 
-                    len = Math.abs(end.y - start.y),
-                    f1 = start.y / len,
-                    px = Math.floor((start.x + (end.x - start.x) * f1) / 6.4),
-                    pz = Math.floor((start.z + (end.z - start.z) * f1) / 6.4);
-
-                this.moveTo(px, pz);
-            }
-
-            this.dragControl.set(0, 0, 0);
-        } else {
-            if (type == 1 && this.dragControl.z == 0) {
-                this.dragControl.set(x, y, 1);
-            } else if (type == 2 && this.dragControl.z > 0){
-                let dx = x - this.dragControl.x;
-                this.dragControl.set(x, y, 2);
-
-                this.mvComponent.rotateCamera(dx);
-            }
-        }
+        console.log(type);
     }
 
     public start(): void {
@@ -145,6 +160,7 @@ class PlayerComponent extends Component {
         if (!this.instance.hasTurn()) { return; }
         
         this.updateMovement();
+        this.updateMouseInput();
     }
 }
 
