@@ -107,15 +107,11 @@ class PlayerComponent extends Component {
 
             this.dragControl.set(0, 0, 0);
             this.controls.LMB = -1;
-        } else {
-            if (this.controls.LMB == 1 && this.dragControl.z == 0) {
-                this.dragControl.set(this.controls.MX, this.controls.MY, 1);
-            } else if (this.controls.LMB == 2 && this.dragControl.z > 0){
-                let dx = this.controls.MX - this.dragControl.x;
-                this.dragControl.set(this.controls.MX, this.controls.MY, 2);
+        } else if (this.controls.LMB == 2 && this.dragControl.z > 0){
+            let dx = this.controls.MX - this.dragControl.x;
+            this.dragControl.set(this.controls.MX, this.controls.MY, 2);
 
-                this.mvComponent.rotateCamera(dx);
-            }
+            this.mvComponent.rotateCamera(dx);
         }
     }
 
@@ -137,7 +133,9 @@ class PlayerComponent extends Component {
         this.controls.MY = y;
         this.controls.LMB = type;
 
-        console.log(type);
+        if (type == 1) {
+            this.dragControl.set(x, y, 1);
+        }
     }
 
     public start(): void {
