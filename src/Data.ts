@@ -2,6 +2,7 @@ import Renderer from './engine/Renderer';
 import Texture from './engine/Texture';
 import Animation from './engine/Animation';
 import { loadJSON } from './math/Utils';
+import { PIXEL_SCALE } from './engine/Constants';
 
 interface AnimationMap {
     [index: string] : Animation;
@@ -91,7 +92,9 @@ abstract class Data {
                 anim.addFrame(frame[0] / textureJSON.width, 
                               frame[1] / textureJSON.height, 
                               frame[2] / textureJSON.width, 
-                              frame[3] / textureJSON.height);
+                              frame[3] / textureJSON.height,
+                              frame[2] * PIXEL_SCALE,
+                              frame[3] * PIXEL_SCALE);
             }
 
             animations[animation] = anim;

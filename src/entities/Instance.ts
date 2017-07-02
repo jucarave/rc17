@@ -98,7 +98,7 @@ class Instance extends GameObject {
             let gs = GRID_SIZE;
 
             x = this.position.x * gs + gs / 2;
-            y = this.position.y * gs + gs / 2;
+            y = this.position.y * gs + this.geometry.height / 2;
             z = this.position.z * gs + gs / 2;
         }
         

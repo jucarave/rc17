@@ -1,39 +1,26 @@
 {
     "sprites": [
         {
-            "src": "img/Characters.png",
-            "name": "characters",
-            "width": 256,
+            "src": "img/Entities.png",
+            "name": "entities",
+            "width": 96,
             "height": 64,
             "animations": {
                 "noSprite" : {
                     "frames": [
-                        [0, 0, 64, 64]
+                        [46, 32, 20, 20]
                     ]
                 },
                 "hero_stand" : {
                     "speed": 0.16,
                     "frames": [
-                        [64, 0, 64, 64]
+                        [1, 1, 43, 62]
                     ]
                 },
                 "rat_stand" : {
                     "speed": 0.16,
                     "frames": [
-                        [128, 0, 64, 64]
-                    ]
-                }
-            }
-        },
-        {
-            "src": "img/Items.png",
-            "name": "items",
-            "width": 64,
-            "height": 64,
-            "animations":{
-                "noSprite" : {
-                    "frames": [
-                        [0, 0, 64, 64]
+                        [46, 1, 44, 29]
                     ]
                 }
             }
@@ -54,7 +41,7 @@
         {
             "ID": "0x0001",
             "type": "CHARACTER",
-            "sprite": "characters.rat",
+            "sprite": "entities.rat",
             "name": "Giant rat",
             "level": 2,
             "HP": 5,
@@ -72,7 +59,7 @@
         {
             "ID": "0x5555",
             "type": "ITEM",
-            "sprite": "items.ratMeat",
+            "sprite": "entities.ratMeat",
             "name": "Rat meat",
             "description": "Restores 1 HP, if eaten raw it has a 10% of chance of poison the consumer."
         }

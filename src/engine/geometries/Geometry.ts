@@ -133,6 +133,9 @@ class Geometry {
     public get verticesCount(): number {
         return this.vertices.length / 3;
     }
+
+    public get width(): number { return 0; }
+    public get height(): number { return 0; }
 }
 
 export default Geometry;

@@ -2,14 +2,14 @@ import Geometry from './Geometry';
 import Renderer from '../Renderer';
 
 class SpriteGeometry extends Geometry {
-    private width           : number;
-    private height          : number;
+    private spriteWidth           : number;
+    private spriteHeight          : number;
 
     constructor(renderer: Renderer, width: number, height: number) {
         super();
 
-        this.width = width;
-        this.height = height;
+        this.spriteWidth = width;
+        this.spriteHeight = height;
 
         this.buildGeometry(renderer);
     }
@@ -33,6 +33,10 @@ class SpriteGeometry extends Geometry {
 
         this.build(renderer);
     }
+
+    public get width() { return this.spriteWidth; }
+
+    public get height() { return this.spriteHeight; }
 }
 
 export default SpriteGeometry;

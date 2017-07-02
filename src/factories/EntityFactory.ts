@@ -13,11 +13,12 @@ import Scene from '../scenes/Scene';
 
 abstract class EntityFactory {
     public static createPlayer(scene: Scene, renderer: Renderer, position: Vector3): Instance {
-        let geometry = new SpriteGeometry(renderer, 6.4, 6.4);
-        let sprite = Data.getSprites()["characters"];
+        let sprite = Data.getSprites()["entities"],
+            animation = sprite.animations["hero_stand"],
+            geometry = new SpriteGeometry(renderer, animation.size.x, animation.size.y);
         
         let material = new SpriteMaterial(renderer, sprite.texture);
-        material.addAnimation(sprite.animations["hero_stand"]);
+        material.addAnimation(animation);
 
         let instance = new Instance(scene, position, geometry, material);
 
@@ -34,15 +35,16 @@ abstract class EntityFactory {
 
     public static createEnemy(scene: Scene, renderer: Renderer, position: Vector3, data: CharacterData): Instance {
         let spriteInfo = data.sprite.split("."),
-            geometry = new SpriteGeometry(renderer, 6.4, 6.4),
             sprite = Data.getSprites()[spriteInfo[0]],
-            material = new SpriteMaterial(renderer, sprite.texture),
             animation = sprite.animations[spriteInfo[1] + "_stand"];
 
         if (!animation) {
             animation = sprite.animations["noSprite"];
             console.info("No sprite found for enemy: [" + data.sprite + "]");
         }
+
+        let geometry = new SpriteGeometry(renderer, animation.size.x, animation.size.y),
+            material = new SpriteMaterial(renderer, sprite.texture);
         
         material.addAnimation(animation);
 
@@ -61,15 +63,16 @@ abstract class EntityFactory {
 
     public static createItem(scene: Scene, renderer: Renderer, position: Vector3, data: ItemData): Instance {
         let spriteInfo = data.sprite.split("."),
-            geometry = new SpriteGeometry(renderer, 6.4, 6.4),
             sprite = Data.getSprites()[spriteInfo[0]],
-            material = new SpriteMaterial(renderer, sprite.texture),
             animation = sprite.animations[spriteInfo[1]];
 
         if (!animation) {
             animation = sprite.animations["noSprite"];
             console.info("No sprite found for item: [" + data.sprite + "]");
         }
+
+        let geometry = new SpriteGeometry(renderer, animation.size.x, animation.size.y),
+            material = new SpriteMaterial(renderer, sprite.texture);
 
         material.addAnimation(animation);
 

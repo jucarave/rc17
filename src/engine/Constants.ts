@@ -3,6 +3,7 @@ export const TEXT_COORD_SIZE = 2;
 
 export const GRID_SIZE = 6.4;
 export const WALL_SIZE = 9.6;
+export const PIXEL_SCALE = 0.1;
 
 export const CANVAS_WIDTH = 854;
 export const CANVAS_HEIGHT = 480;

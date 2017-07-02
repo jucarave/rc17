@@ -1,10 +1,13 @@
+import { Vector3, vec3 } from '../math/Vector3';
+
 class Animation {
     private frames          : Array<Array<number>>;
     private frameIndex      : number;
     private animationSpeed  : number;
     private pauseSpeed      : number;
-
+    
     public readonly name            : string;
+    public readonly size            : Vector3;
 
     constructor(name: string, frames?: Array<Array<number>>) {
         this.name = name;
@@ -12,10 +15,13 @@ class Animation {
         this.frameIndex = 0;
         this.animationSpeed = 1.0;
         this.pauseSpeed = 0;
+        this.size = vec3(0.0);
     }
 
-    public addFrame(x: number, y: number, w: number, h: number): void {
+    public addFrame(x: number, y: number, w: number, h: number, worldWidth: number, worldHeight: number): void {
         this.frames.push([x, y, w, h]);
+
+        this.size.set(worldWidth, worldHeight, 0);
     }
 
     public setFrameIndex(frameIndex: number) {
