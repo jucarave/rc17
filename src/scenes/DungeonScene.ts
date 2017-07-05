@@ -51,7 +51,7 @@ class DungeonScene extends Scene {
 
         this.initScene();
 
-        this.castLight(player, PlayerComponent.losDistance);
+        this.castLight(player.getPosition(), PlayerComponent.losDistance);
 
         this.searchTurn = true;
     }
@@ -180,11 +180,11 @@ class DungeonScene extends Scene {
         return ret;
     }
 
-    public castLight(instance: Instance, distance: number): void {
+    public castLight(position: Vector3, distance: number): void {
         let d = distance,
             d_2 = distance / 2,
-            x = instance.getPosition().x,
-            z = instance.getPosition().z;
+            x = position.x,
+            z = position.z;
 
         for (let i=0;i<=distance*2;i++) {
             this.castLightRay(x, z, x - d, z - d + i, d_2);

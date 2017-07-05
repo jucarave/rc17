@@ -6,6 +6,7 @@ import { $ } from './math/Utils';
 import Scene from './scenes/Scene';
 import DungeonScene from './scenes/DungeonScene';
 import { Data } from './Data';
+import UI from './UI';
 
 class App {
     private renderer        : Renderer;
@@ -22,6 +23,8 @@ class App {
     private newGame(): void {
         Data.createPlayer("Kram");
         this.scene = new DungeonScene(this.renderer);
+
+        UI.init();
 
         this.stats.showPanel(1);
         document.body.appendChild(this.stats.dom);

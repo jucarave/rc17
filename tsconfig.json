@@ -10,6 +10,7 @@
   "files": [
     "src/App.ts",
     "src/Data.ts",
+    "src/UI.ts",
 
     "src/components/AIRandomComponent.ts",
     "src/components/CharacterComponent.ts",

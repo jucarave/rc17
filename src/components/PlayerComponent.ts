@@ -58,7 +58,7 @@ class PlayerComponent extends Component {
     }
 
     private updateFOV(): void {
-        this.scene.castLight(this.instance, PlayerComponent.losDistance);
+        this.scene.castLight(this.instance.getPosition(), PlayerComponent.losDistance);
     }
 
     private moveTo(x: number, z: number): void {
